@@ -430,16 +430,16 @@ function isDualExactSum10(attr, high) {
 function fmt(x) { return (x==null || Number.isNaN(x)) ? "—" : (Math.round(x*100)/100).toFixed(2); }
 
 function getFilters() {
-  const routeRadio = document.querySelector('input[name="routeType"]:checked');
-  const routeType  = routeRadio ? routeRadio.value : "전체";
   const highInput = $("#dual_high");
   const routeSel = $("#routeType");
-  const routeType = routeSel ? routeSel.value : "";
+  const routeType = routeSel ? routeSel.value : "";   // "" = 전체(필터 없음)
+
   let high = parseInt(highInput?.value || "5", 10);
   if (Number.isNaN(high)) high = 5;
-  high = Math.max(5, Math.min(9, high));     // ⬅️ 9까지만
+  high = Math.max(5, Math.min(9, high));     // 5~9 사이로 고정
   const low = 10 - high;
   if ($("#dual_low")) $("#dual_low").value = String(low);
+
   return {
     q: $("#q").value.trim(),
     attrPick: $("#attrPick").value,
@@ -458,6 +458,7 @@ function getFilters() {
     min_grow_agi: parseFloat($("#min_grow_agi").value)||0,
   };
 }
+
 
 function match(p, f) {
   // ★ searchable 값이 false인 경우만 필터링 (속성이 없으면 기본 true 취급)
@@ -793,12 +794,13 @@ function render() {
   $$(".grade").forEach(g=>{ if(!g.checked) chips.appendChild(chip(`등급 제외: ${g.value}`, ()=>{ g.checked=true; render(); })); });
     // 획득 경로 chip
   if (f.routeType && f.routeType !== "") {
-    const txt = `획득: ${f.routeType}`;
-    chipsEl.appendChild(makeChip(txt, () => {
-      const sel = $("#routeType");
-      if (sel) sel.value = "";
-      render();
-    }));
+    chips.appendChild(
+      chip(`획득: ${f.routeType}`, () => {
+        const sel = $("#routeType");
+        if (sel) sel.value = "";
+        render();
+      })
+    );
   }
   const mountAll = f.mounts.length===2;
   if (!mountAll) {
