@@ -117,6 +117,16 @@
     padding:8px 12px; cursor:pointer; height:38px; display:inline-flex; align-items:center; justify-content:center;
   }
   .backBtn:hover, .adminLogin:hover{ border-color:#2a3a59; color:#c6d0e0; }
+.routeSelect{
+  width:100%;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid var(--line2);
+  background:var(--tab);
+  color:var(--text);
+  font-size:13px;
+  font-weight:900;
+}
 
   .dualAdv{display:none; margin-top:8px; gap:8px; grid-template-columns: 1fr 90px 1fr}
   .dualAdv.active{display:grid}
@@ -266,58 +276,25 @@
             </div>
           </div>
           <div style="margin-top:10px;">
-            <div class="subTitle">획득 경로</div>
-            <div class="checks">
-              <label class="check">
-                <input type="radio" name="routeType" value="전체" checked>
-                <span>전체</span>
-              </label>
-              <label class="check">
-                <input type="radio" name="routeType" value="포획">
-                <span>포획</span>
-              </label>
-              <label class="check">
-                <input type="radio" name="routeType" value="퀘스트">
-                <span>퀘스트</span>
-              </label>
-              <label class="check">
-                <input type="radio" name="routeType" value="복권">
-                <span>복권</span>
-              </label>
-              <label class="check">
-                <input type="radio" name="routeType" value="코스">
-                <span>코스</span>
-              </label>
-              <label class="check">
-                <input type="radio" name="routeType" value="VIP">
-                <span>VIP</span>
-              </label>
-              <label class="check">
-                <input type="radio" name="routeType" value="레이드">
-                <span>레이드</span>
-              </label>
-              <label class="check">
-                <input type="radio" name="routeType" value="이벤트">
-                <span>이벤트</span>
-              </label>
-              <label class="check">
-                <input type="radio" name="routeType" value="듀얼보상">
-                <span>듀얼보상</span>
-              </label>
-              <label class="check">
-                <input type="radio" name="routeType" value="진화">
-                <span>진화</span>
-              </label>
-              <label class="check">
-                <input type="radio" name="routeType" value="환생">
-                <span>환생</span>
-              </label>
-              <label class="check">
-                <input type="radio" name="routeType" value="기타">
-                <span>기타</span>
-              </label>
-            </div>
-          </div>
+<!-- 기존: "획득 경로 필터링은 공식 홈페이지를 이용해 주세요." 부분 전체를 이걸로 교체 -->
+<div class="filterCol">
+  <div class="filterTitle">획득 경로</div>
+  <select id="routeType" class="routeSelect">
+    <option value="">전체</option>
+    <option value="포획">포획</option>
+    <option value="퀘스트">퀘스트</option>
+    <option value="복권">복권</option>
+    <option value="코스">코스</option>
+    <option value="VIP">VIP</option>
+    <option value="레이드">레이드</option>
+    <option value="이벤트">이벤트</option>
+    <option value="듀얼보상">듀얼보상</option>
+    <option value="진화">진화</option>
+    <option value="환생">환생</option>
+    <option value="기타">기타</option>
+  </select>
+  <div class="filterDesc mini">획득 경로 기준으로 필터링합니다.</div>
+</div>
         </div>
       </div>
       <div class="card">
@@ -456,6 +433,8 @@ function getFilters() {
   const routeRadio = document.querySelector('input[name="routeType"]:checked');
   const routeType  = routeRadio ? routeRadio.value : "전체";
   const highInput = $("#dual_high");
+  const routeSel = $("#routeType");
+  const routeType = routeSel ? routeSel.value : "";
   let high = parseInt(highInput?.value || "5", 10);
   if (Number.isNaN(high)) high = 5;
   high = Math.max(5, Math.min(9, high));     // ⬅️ 9까지만
@@ -506,11 +485,9 @@ function match(p, f) {
   const mountState = p.mount ? "가능" : "불가";
   if (!f.mounts.includes(mountState)) return false;
   
-  if (f.routeType && f.routeType !== "전체") {
-    const rt = p.routeType || "기타";   // JSON에 들어간 routeType 사용
-    if (rt !== f.routeType) return false;
+  if (f.routeType && f.routeType !== "") {
+    if ((p.routeType || "기타") !== f.routeType) return false;
   }
-
 
   const I = p.s0 || p.init || {};
   const G = p.sg || p.grow || {};
@@ -814,6 +791,15 @@ function render() {
     else chips.appendChild(chip(`주속성: ${f.attrPick}`, ()=>{ $("#attrPick").value="전체"; render(); }));
   }
   $$(".grade").forEach(g=>{ if(!g.checked) chips.appendChild(chip(`등급 제외: ${g.value}`, ()=>{ g.checked=true; render(); })); });
+    // 획득 경로 chip
+  if (f.routeType && f.routeType !== "") {
+    const txt = `획득: ${f.routeType}`;
+    chipsEl.appendChild(makeChip(txt, () => {
+      const sel = $("#routeType");
+      if (sel) sel.value = "";
+      render();
+    }));
+  }
   const mountAll = f.mounts.length===2;
   if (!mountAll) {
     chips.appendChild(chip(`탑승: ${f.mounts.join("/")}`, ()=>{ $$(".mount").forEach(m=>m.checked=true); render(); }));
@@ -951,6 +937,7 @@ async function adminUnlock() {
 }
 
 /* ========== 이벤트 바인딩 ========== */
+$("#routeType").addEventListener("change", render);
 $("#adminLoginBtn").addEventListener("click", async ()=>{ await adminUnlock(); render(); });
 $("#toggleEditBtn")?.addEventListener("click", ()=>{ if (!ADMIN) return; EDIT_MODE = !EDIT_MODE; render(); });
 $("#exportCsv")?.addEventListener("click", ()=>{ if(!ADMIN) return; const rows = currentFiltered(); download("stoneage_pets_filtered.csv", toCSV(rows), "text/csv;charset=utf-8"); });
