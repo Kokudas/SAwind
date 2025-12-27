@@ -184,6 +184,10 @@
   color:var(--muted);
 }
 
+  .routeSelect{
+  width: 100%;
+}
+
 /* 모바일에서는 위아래로 자연스럽게 나눔 */
 @media (max-width: 780px){
   .filter-toolbar{
@@ -293,26 +297,26 @@
             </div>
           </div>
           <div style="margin-top:10px;">
-    <div style="margin-top:8px">
-      <label class="section" style="margin-bottom:4px" for="routeType">획득 경로</label>
-      <select id="routeType">
-        <option value="전체">전체</option>
-        <option value="포획">포획</option>
-        <option value="퀘스트">퀘스트</option>
-        <option value="복권">복권</option>
-        <option value="코스">코스</option>
-        <option value="VIP">VIP</option>
-        <option value="레이드">레이드</option>
-        <option value="이벤트">이벤트</option>
-        <option value="듀얼보상">듀얼보상</option>
-        <option value="진화">진화</option>
-        <option value="환생">환생</option>
-        <option value="기타">기타</option>
-      </select>
-      <div class="muted" style="font-size:12px; margin-top:4px;">
-        획득 경로 기준으로 필터링합니다.
-      </div>
-    </div>
+<div class="filterCol">
+  <div class="filterTitle">획득 경로</div>
+  <div class="checks">
+  <select id="routeType" class="routeSelect">
+    <option value="">전체</option>
+    <option value="포획">포획</option>
+    <option value="퀘스트">퀘스트</option>
+    <option value="복권">복권</option>
+    <option value="코스">코스</option>
+    <option value="VIP">VIP</option>
+    <option value="레이드">레이드</option>
+    <option value="이벤트">이벤트</option>
+    <option value="듀얼보상">듀얼보상</option>
+    <option value="진화">진화</option>
+    <option value="환생">환생</option>
+    <option value="기타">기타</option>
+  </select>
+</div>
+  <div class="filterDesc mini">획득 경로 기준으로 필터링합니다.</div>
+</div>
 
         </div>
       </div>
