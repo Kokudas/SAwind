@@ -772,18 +772,6 @@ function sortRows(rows, f, sortMode) {
 }
 
 
-  // 문턱이 없으면: 주 속성 강한 순 → 이름 (기존 로직)
-  const key = f.attrPick;
-  if (!key || key === "전체" || key === "듀얼") return rows;
-  const getv = (p) => (p.attr && typeof p.attr[key] === "number") ? p.attr[key] : 0;
-  return rows.slice().sort((a, b) => {
-    const dv = getv(b) - getv(a); // 강한 순
-    if (dv !== 0) return dv;
-    return (a.name || "").localeCompare(b.name || "", "ko");
-  });
-}
-
-
 
 function ensureMountAtLeastOne(e) {
   const boxes = $$(".mount");
