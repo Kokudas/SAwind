@@ -1668,10 +1668,10 @@
       "def": 1.386,
       "agi": 1.417
     },
-    "route": "샴기르 경비병 시험",
+    "route": "샴기르 경비병 시험 퀘스트",
     "mount": false,
     "img": "https://wind01.net/info/img/100820.gif",
-    "routeType": "기타"
+    "routeType": "퀘스트"
   },
   {
     "name": "봉봉",
