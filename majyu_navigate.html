@@ -20,7 +20,11 @@
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
       padding:16px;
     }
-    h1{font-size:1.1rem;margin-bottom:8px;}
+    h1{
+      font-size:1.2rem;
+      margin-bottom:8px;
+      font-weight:700;
+    }
 
     .controls{
       background:var(--panel);
@@ -42,6 +46,7 @@
       background:var(--accent);
       color:#fff;
       font-weight:600;
+      white-space:nowrap;
     }
     .controls button.secondary{
       background:#424867;
@@ -52,11 +57,21 @@
       display:flex;
       align-items:center;
       gap:6px;
+      white-space:nowrap;
+    }
+    .controls select{
+      font-size:.8rem;
+      padding:3px 6px;
+      border-radius:6px;
+      border:1px solid #2d3248;
+      background:#060812;
+      color:var(--text);
     }
     .controls .spacer{flex:1;}
     .coord-live{
       font-size:.8rem;
       color:#a5ffb8;
+      white-space:nowrap;
     }
 
     .stage-wrap{
@@ -87,24 +102,26 @@
 
     .pip-overlay{
       position:absolute;
-      inset:0;                     /* top/right/bottom/left:0 */
-      display:none;                /* 기본은 숨김 */
+      inset:0;
+      display:none;
       align-items:center;
       justify-content:center;
       background:#000;
       color:#fff;
-      font-size:1.3rem;
+      font-size:1.1rem;
       font-weight:600;
       z-index:10;
-      pointer-events:none;         /* 클릭 막지 않게 */
+      pointer-events:none;
+      text-align:center;
     }
 
-
-    .hint{
-      margin-top:8px;
-      font-size:1.25rem;
-      color:#FAFAF8;
-      line-height:1.4;
+    /* PiP 활성화 시 메인 화면을 검은 화면 + 문구로 교체 */
+    body.pip-active #stage #screenVideo,
+    body.pip-active #stage #navCanvas{
+      opacity:0;
+    }
+    body.pip-active #stage #pipOverlay{
+      display:flex;
     }
 
     .ocr-panel{
@@ -135,24 +152,55 @@
       margin-top:8px;
     }
 
-    /* PiP 활성화 시 메인 화면을 검은 화면 + 문구로 교체 */
-body.pip-active #stage #screenVideo,
-body.pip-active #stage #navCanvas{
-  opacity:0;
-}
-
-body.pip-active #stage #pipOverlay{
-  display:flex;
-}
-
+    .hint{
+      margin-top:10px;
+      background:var(--panel);
+      border-radius:10px;
+      padding:10px 12px;
+      box-shadow:0 6px 18px rgba(0,0,0,.35);
+      font-size:.85rem;
+      color:#f5f6ff;
+      line-height:1.5;
+    }
+    .hint b{
+      color:#ffeb95;
+    }
+    .hint-section-title{
+      font-weight:700;
+      margin-top:4px;
+      margin-bottom:2px;
+      color:#e6ecff;
+    }
+    .hint ul{
+      padding-left:1.1rem;
+      margin:4px 0 6px;
+    }
+    .hint li{
+      margin-bottom:2px;
+    }
+    .hint img{
+      margin-top:4px;
+      max-width:100%;
+      border-radius:6px;
+      border:1px solid #30364f;
+    }
   </style>
 </head>
 <body>
   <h1>StoneAge 마쥬의 미로 네비게이션</h1>
 
-  <!-- 유저용 상단 컨트롤 -->
+  <!-- 상단 컨트롤 -->
   <div class="controls">
     <button id="startBtn">캡쳐 시작</button>
+
+    <label>
+      서버
+      <select id="serverSelect">
+        <option value="NOVA">NOVA</option>
+        <option value="HAPPY">HAPPY</option>
+        <option value="WIND">WIND</option>
+      </select>
+    </label>
 
     <label>
       층
@@ -164,10 +212,9 @@ body.pip-active #stage #pipOverlay{
       </select>
     </label>
 
-    <button id="ocrOnceBtn">좌표 OCR 1회 테스트</button>
+    <button id="ocrOnceBtn">좌표 OCR 1회</button>
     <button id="autoOcrToggle">자동 추적 시작</button>
-    
-    <button id="pipBtn" class="secondary">pip모드로 보기</button>
+    <button id="pipBtn" class="secondary">PiP 모드</button>
 
     <div class="spacer"></div>
 
@@ -180,14 +227,19 @@ body.pip-active #stage #pipOverlay{
     <div id="stage">
       <video id="screenVideo" autoplay playsinline></video>
       <canvas id="navCanvas"></canvas>
-        <div id="pipOverlay" class="pip-overlay">
-        PIP 모드에서 재생 중
+      <div id="pipOverlay" class="pip-overlay">
+        Picture-in-Picture 모드에서<br>재생 중입니다.
       </div>
     </div>
   </div>
 
   <!-- 관리자 전용 OCR 상세 설정 -->
   <div class="ocr-panel">
+    <div style="font-size:.78rem;color:var(--muted);margin-bottom:4px;">
+      ※ NOVA & HAPPY 서버는 미니맵을 키지 않고 진행해도 됩니다.<br>
+      &nbsp;&nbsp;WIND 서버는 반드시 미니맵을 켜고 진행해 주세요.
+    </div>
+
     <div class="admin-only">
       <label>동 X <input id="eastX"  type="number" value="880" style="width:60px;"></label>
       <label>Y    <input id="eastY"  type="number" value="780" style="width:60px;"></label>
@@ -209,61 +261,148 @@ body.pip-active #stage #pipOverlay{
         <button id="learnEastBtn">동 템플릿 학습</button>
         <button id="clearTemplatesBtn" class="secondary">템플릿 초기화</button>
       </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;font-size:0.75rem;margin-top:4px;">
+        <button id="exportConfigBtn" class="secondary">설정 JSON 내보내기</button>
+        <button id="importConfigBtn" class="secondary">설정 JSON 불러오기</button>
+        <input id="configFileInput" type="file" accept="application/json" style="display:none;">
+      </div>
       <div class="ocr-result" id="templateStatus">템플릿 상태: 없음</div>
     </div>
   </div>
 
+  <!-- 사용 방법 / 참고 사항 -->
   <div class="hint">
-    ▶ <b>사용 순서</b><br>
-    1) StoneAge를 <b>"1024x768"</b> 해상도의 창모드로 띄워둔다.<br>
-    2) 게임 내 폰트를 <b>"굴림체"</b>로 수정한다.<br>
-    3) <b>캡쳐 시작</b> 버튼을 누르고, 게임 창을 선택한다.<br>
-    4) <b>게임 화면 중 우측 하단의 좌표가 모두 노출되게 창의 위치를 조정한다.</b><br>
-    5) <b>자동 추적 시작</b>을 누르면 좌표와 네비 라인이 자동으로 갱신된다.<br>
-    6) <b>1~3층은 자동으로 층수전환이 되고, 3층 마무리 후 캡쳐를 종료한다. </b><br>
-    7) <b>끈 자르는 돌을 받은 다음, 다시 1층 진입 후 직접 수동으로 층수를 "끈돌"층으로 바꾼 후 다시 추적 시작버튼을 누른다.</b> <br>
-    <br>
-    <br>
-    ★ <b>참고 사항</b><br>
-    1) 끈 보따리의 좌표는 각각 <b>(281,48) / (163,12) / (145,54)</b> 입니다.<br>
-    <img src = "https://raw.githubusercontent.com/Kokudas/Kokudas.github.io/main/majyu_help.png" alt = "이미지를 찾지 못했습니다." ><br>
-    2) <b>캡쳐가 끝나고 윈도우 자체 렉 발생 시,<br>
-     ctrl+alt+del 작업관리자에서 windows 탐색기 혹은 explorer.exe를 다시 시작해 주세요.<br>
-     <br>
-     <b>☆ 본 유틸에 대한 문의사항은 과장(kokodas#0339)로 문의주세요.</b>
-     <b>따잇하실 경우, 미리 연락 혹은 출처라도 남겨주는 매너를 지켜주세요.</b><br>
-     <b>테스트 완료 서버 : NOVA, HAPPY</b>
-      
+    <div class="hint-section-title">▶ 사용 순서</div>
+    <ul>
+      <li>StoneAge를 <b>"1024x768"</b> 해상도의 창모드로 띄워둔다.</li>
+      <li>게임 내 폰트를 <b>"굴림체"</b>로 설정한다.</li>
+      <li>상단에서 <b>서버</b>를 선택한다. (NOVA / HAPPY / WIND)</li>
+      <li><b>캡쳐 시작</b> 버튼을 누르고, 게임 창을 선택한다.</li>
+      <li>게임 화면 우측 하단의 좌표가 모두 보이도록 창 위치를 조정한다.</li>
+      <li><b>자동 추적 시작</b>을 누르면 좌표와 네비 라인이 자동 갱신된다.</li>
+      <li>1~3층은 좌표에 따라 자동으로 층수 전환이 된다.</li>
+      <li>3층 클리어 후 캡쳐 종료 → 끈 자르는 돌 준비 후 1층 재입장 → 층을 <b>끈돌</b>로 바꾸고 다시 추적 시작.</li>
+    </ul>
 
+    <div class="hint-section-title">★ 참고 사항</div>
+    <ul>
+      <li>끈 보따리 좌표: <b>(281,48) / (163,12) / (145,54)</b></li>
+    </ul>
+    <img src="https://raw.githubusercontent.com/Kokudas/Kokudas.github.io/main/majyu_help.png"
+         alt="이미지를 찾지 못했습니다.">
+
+    <ul>
+      <li>캡쳐 이후 윈도우 전체가 버벅일 경우,<br>
+        <b>Ctrl+Alt+Del → 작업 관리자 → Windows 탐색기(explorer.exe) 다시 시작</b>을 권장합니다.</li>
+    </ul>
+
+    <div class="hint-section-title">☆ 문의 / 사용 매너</div>
+    <ul>
+      <li>문의: <b>과장 (kokodas#0339)</b></li>
+      <li>따잇하실 경우, <b>사전 연락 또는 출처 표기</b> 정도의 매너는 지켜주세요.</li>
+      <li>테스트 완료 서버: <b>NOVA, HAPPY</b></li>
+    </ul>
   </div>
 
 <script>
   // ===== 0. 기본 DOM/상태 =====
-  const startBtn = document.getElementById('startBtn');
-  const video    = document.getElementById('screenVideo');
-  const navCanvas= document.getElementById('navCanvas');
-  const navCtx   = navCanvas.getContext('2d');
+  const startBtn   = document.getElementById('startBtn');
+  const video      = document.getElementById('screenVideo');
+  const navCanvas  = document.getElementById('navCanvas');
+  const navCtx     = navCanvas.getContext('2d');
   const pipOverlay = document.getElementById('pipOverlay');
 
+  const serverSelect = document.getElementById('serverSelect');
+  const floorSelect  = document.getElementById('floorSelect');
+  const ocrOnceBtn   = document.getElementById('ocrOnceBtn');
+  const autoBtn      = document.getElementById('autoOcrToggle');
+  const coordLive    = document.getElementById('coordLive');
 
-  const floorSelect = document.getElementById('floorSelect');
-  const ocrOnceBtn  = document.getElementById('ocrOnceBtn');
-  const autoBtn     = document.getElementById('autoOcrToggle');
-  const coordLive   = document.getElementById('coordLive');
-
-  const coordCanvas = document.getElementById('coordCanvas');
-  const coordCtx    = coordCanvas.getContext('2d');
-  const ocrResultDiv= document.getElementById('ocrResult');
+  const coordCanvas  = document.getElementById('coordCanvas');
+  const coordCtx     = coordCanvas.getContext('2d');
+  const ocrResultDiv = document.getElementById('ocrResult');
 
   const learnEastInput    = document.getElementById('learnEastValue');
   const learnEastBtn      = document.getElementById('learnEastBtn');
   const clearTemplatesBtn = document.getElementById('clearTemplatesBtn');
   const templateStatus    = document.getElementById('templateStatus');
+  const exportConfigBtn = document.getElementById('exportConfigBtn');
+  const importConfigBtn = document.getElementById('importConfigBtn');
+  const configFileInput = document.getElementById('configFileInput');
 
-    // ★ PiP 관련 DOM/상태
-  const pipBtn   = document.getElementById('pipBtn');
-  let pipVideo = null;                 // PiP에 올릴 숨겨진 <video>
-  const pipCanvas = document.createElement('canvas'); // 합성용 캔버스
+
+  // ===== 서버별 설정 저장용 키 =====
+  const SERVER_ID_KEY           = 'saCurrentServerId.v1';
+  const TEMPLATE_STORAGE_PREFIX = 'saDigitTemplates.v1.';
+  const RECT_STORAGE_PREFIX     = 'saOcrRectConfig.v1.';
+  let currentServerId = 'NOVA';
+
+  const DEFAULT_RECT = {
+    eastX: 880, eastY: 780, eastW: 20, eastH: 17,
+    southX: 930, southY: 780, southW: 20, southH: 17
+  };
+
+  const rectInputIds = ['eastX','eastY','eastW','eastH','southX','southY','southW','southH'];
+  const rectInputs   = rectInputIds.map(id => document.getElementById(id));
+
+  function applyRectConfigToInputs(cfg){
+    const c = Object.assign({}, DEFAULT_RECT, cfg || {});
+    if (document.getElementById('eastX'))  document.getElementById('eastX').value  = c.eastX;
+    if (document.getElementById('eastY'))  document.getElementById('eastY').value  = c.eastY;
+    if (document.getElementById('eastW'))  document.getElementById('eastW').value  = c.eastW;
+    if (document.getElementById('eastH'))  document.getElementById('eastH').value  = c.eastH;
+    if (document.getElementById('southX')) document.getElementById('southX').value = c.southX;
+    if (document.getElementById('southY')) document.getElementById('southY').value = c.southY;
+    if (document.getElementById('southW')) document.getElementById('southW').value = c.southW;
+    if (document.getElementById('southH')) document.getElementById('southH').value = c.southH;
+  }
+
+  function loadRectsFromStorage(serverId){
+    try{
+      const text = localStorage.getItem(RECT_STORAGE_PREFIX + serverId);
+      if (text){
+        const cfg = JSON.parse(text);
+        applyRectConfigToInputs(cfg);
+        console.log('rect config loaded for server:', serverId);
+      }else{
+        applyRectConfigToInputs(DEFAULT_RECT);
+        console.log('rect config default used for server:', serverId);
+      }
+    }catch(e){
+      console.error('loadRectsFromStorage error:', e);
+      applyRectConfigToInputs(DEFAULT_RECT);
+    }
+  }
+
+  function saveRectsToStorage(serverId){
+    try{
+      const cfg = {
+        eastX:  Number(document.getElementById('eastX').value)  || DEFAULT_RECT.eastX,
+        eastY:  Number(document.getElementById('eastY').value)  || DEFAULT_RECT.eastY,
+        eastW:  Number(document.getElementById('eastW').value)  || DEFAULT_RECT.eastW,
+        eastH:  Number(document.getElementById('eastH').value)  || DEFAULT_RECT.eastH,
+        southX: Number(document.getElementById('southX').value) || DEFAULT_RECT.southX,
+        southY: Number(document.getElementById('southY').value) || DEFAULT_RECT.southY,
+        southW: Number(document.getElementById('southW').value) || DEFAULT_RECT.southW,
+        southH: Number(document.getElementById('southH').value) || DEFAULT_RECT.southH
+      };
+      localStorage.setItem(RECT_STORAGE_PREFIX + serverId, JSON.stringify(cfg));
+    }catch(e){
+      console.error('saveRectsToStorage error:', e);
+    }
+  }
+
+  rectInputs.forEach(input => {
+    if (!input) return;
+    input.addEventListener('change', () => {
+      saveRectsToStorage(currentServerId);
+    });
+  });
+
+  // ----- PiP 관련 DOM/상태 -----
+  const pipBtn    = document.getElementById('pipBtn');
+  let pipVideo    = null;
+  const pipCanvas = document.createElement('canvas');
   const pipCtx    = pipCanvas.getContext('2d');
   let pipActive   = false;
   let pipAnimating = false;
@@ -271,18 +410,14 @@ body.pip-active #stage #pipOverlay{
   const OCR_INTERVAL = 200;
   let currentStream  = null;
 
-function setMainOverlayForPip(active){
-  if (active){
-    // PiP ON: 바디에 상태 클래스 부여 → CSS가 영상/캔버스 숨기고 오버레이 표시
-    document.body.classList.add('pip-active');
-  } else {
-    // PiP OFF: 상태 해제 → 원래 화면 복원
-    document.body.classList.remove('pip-active');
-    updateNavigation(); // 네비 다시 그리기
+  function setMainOverlayForPip(active){
+    if (active){
+      document.body.classList.add('pip-active');
+    }else{
+      document.body.classList.remove('pip-active');
+      updateNavigation();
+    }
   }
-}
-
-
 
   function cleanupCapture() {
     if (currentStream) {
@@ -293,17 +428,15 @@ function setMainOverlayForPip(active){
     stopAutoOcr();
     clearNavPath();
 
-    // ★ PiP도 같이 정리
     pipAnimating = false;
     if (document.pictureInPictureElement === pipVideo) {
       document.exitPictureInPicture().catch(()=>{});
     }
     pipActive = false;
-    if (pipBtn) pipBtn.textContent = 'pip모드로 보기';
+    if (pipBtn) pipBtn.textContent = 'PiP 모드';
 
-    setMainOverlayForPip(false);  // ★ 혹시 남아있을 오버레이/투명도 초기화
+    setMainOverlayForPip(false);
   }
-
 
   startBtn.addEventListener('click', async () => {
     try {
@@ -346,382 +479,89 @@ function setMainOverlayForPip(active){
   window.addEventListener('beforeunload', cleanupCapture);
 
   // ===== 2. 층 경로 정의 / 자동 층 전환 =====
-
-const FLOOR_PATHS = {
-  "1F": {
-    label: "미로 1층",
-    raw: [
-  {e : 4, s : 6},
-  { e: 4, s: 12 },
-  { e: 10, s: 12 },
-  { e: 10, s: 35 },
-  { e: 16, s: 35 },
-  { e: 16, s: 12 },
-  { e: 36, s: 12 },
-  { e: 36, s: 18 },
-  { e: 22, s: 18 },
-  { e: 22, s: 24 },
-  { e: 36, s: 24 },
-  { e: 36, s: 30 },
-  { e: 22, s: 30 },
-  { e: 22, s: 36 },
-  { e: 45, s: 36 },
-  { e: 45, s: 42 },
-  { e: 30, s: 42 },
-  { e: 30, s: 48 },
-  { e: 51, s: 48 },
-  { e: 51, s: 42 },
-  { e: 78, s: 42 },
-  { e: 78, s: 36 },
-  { e: 84, s: 36 },
-  { e: 84, s: 48 },
-  { e: 108, s: 48 },
-  { e: 108, s: 66 },
-  { e: 114, s: 66 },
-  { e: 114, s: 48 },
-  { e: 120, s: 48 },
-  { e: 120, s: 57 },
-  { e: 138, s: 57 },
-  { e: 138, s: 48 },
-  { e: 162, s: 48 },
-  { e: 162, s: 18 },
-  { e: 156, s: 18 },
-  { e: 156, s: 6 },
-  { e: 198, s: 6 },
-  { e: 198, s: 27 },
-  { e: 204, s: 27 },
-  { e: 204, s: 6 },
-  { e: 240, s: 6 },
-  { e: 240, s: 18 },
-  { e: 264, s: 18 },
-  { e: 264, s: 12 },
-  { e: 246, s: 12 },
-  { e: 246, s: 6 },
-  { e: 270, s: 6 },
-  { e: 270, s: 24},
-  { e: 276, s:  24},
-  { e: 276, s:  6},
-  { e: 288, s:  6},
-  { e: 288, s:  36},
-  { e: 270, s:  36},
-  { e: 270, s:  42},
-  { e: 288, s:  42},
-  { e: 288, s: 72 },
-  { e: 264, s:  72},
-  { e: 264, s:  78},
-  { e: 288, s:  78},
-  { e: 288, s:  121},
-  { e: 252, s:  121},
-  { e: 252, s:  133},
-  { e: 258, s: 133 },
-  { e: 258, s:  127},
-  { e: 288, s:  127},
-  { e: 288, s: 133 },
-  { e: 264, s:  133},
-  { e: 264, s: 139 },
-  { e: 240, s:  140},
-  { e: 240, s:  152},
-  { e: 246, s: 152 },
-  { e: 246, s:  146},
-  { e: 270, s:  146},
-  { e: 270, s: 140 },
-  { e: 288, s:  140},
-  { e: 288, s:  158},
-  { e: 282, s:  158},
-  { e: 282, s:  146},
-  { e: 276, s:  146},
-  { e: 276, s:  164},
-  { e: 288, s:  164},
-  { e: 289, s:  168}
-  ]
-},
-"2F": {
-    label: "미로 2층",
-    raw: [
-      { e: 232, s:  12},
-      { e: 231, s:  87},
-      { e: 225, s:  87},
-      { e: 225, s:  63},
-      { e: 219, s: 63 },
-      { e: 219, s:  81},
-      { e: 213, s:  81},
-      { e: 213, s:  57},
-      { e: 207, s: 57 },
-      { e: 207, s: 75 },
-      { e: 201, s: 75 },
-      { e: 201, s:  57},
-      { e: 195, s:  57},
-      { e: 195, s:  75},
-      { e: 183, s:  75},
-      { e: 183, s:  105},
-      { e: 195, s: 105},
-      { e: 195, s:  117},
-      { e: 201, s:  117},
-      { e: 201, s:  135},
-      { e: 195, s:  135},
-      { e: 195, s:  123},
-      { e: 189, s:  123},
-      { e: 189, s:  135},
-      { e: 183, s:  135},
-      { e: 183, s:  111},
-      { e: 177, s:  111},
-      { e: 177, s:  87},
-      { e: 171, s:  87},
-      { e: 171, s:  99},
-      { e: 165, s:  99},
-      { e: 165, s:  87},
-      { e: 147, s:  87},
-      { e: 147, s:  75},
-      { e: 141, s:  75},
-      { e: 141, s:  98},
-      { e: 153, s:  99},
-      { e: 153, s:  105},
-      { e: 135, s:  105},
-      { e: 135, s:  75},
-      { e: 129, s: 75 },
-      { e: 129, s:  111},
-      { e: 132, s: 111 },
-      { e: 132, s:  120},
-      { e: 126, s:  120},
-      { e: 126, s:  117},
-      { e: 123, s: 117 },
-      { e: 123, s:  93},
-      { e: 99, s: 93 },
-      { e: 99, s:  99},
-      { e:117 , s:  99},
-      { e: 117, s:  123},
-      { e: 120, s: 123},
-      { e: 120, s:  135},
-      { e:114 , s: 135 },
-      { e: 114, s:  129},
-      { e:111 , s:  129},
-      { e: 111, s:  123},
-      { e: 87, s: 123 },
-      { e: 87, s: 117 },
-      { e: 111, s:  117},
-      { e: 111, s: 105 },
-      { e: 93, s: 105 },
-      { e: 93, s:  93},
-      { e: 87, s:  93},
-      { e: 87, s: 105 },
-      { e: 81, s: 105 },
-      { e: 81, s: 87 },
-      { e: 75, s:  87},
-      { e: 75, s: 99 },
-      { e:63 , s: 99 },
-      { e:63 , s: 105 },
-      { e:75 , s: 105 },
-      { e: 75, s:  117},
-      { e: 69, s:  117},
-      { e:69 , s:  129},
-      { e: 63, s: 129 },
-      { e: 63, s: 123 },
-      { e: 51, s:  123},
-      { e: 51, s: 129 },
-      { e: 33, s: 129 },
-      { e: 33, s: 147 },
-      { e: 27, s:  147},
-      { e: 27, s: 123 },
-      { e: 45, s:  123},
-      { e: 45, s: 117 },
-      { e: 63, s:  117},
-      { e: 63, s:  111},
-      { e: 45, s: 111 },
-      { e: 45, s:  81},
-      { e: 57, s: 81 },
-      { e: 57, s: 75 },
-      { e: 33, s: 75 },
-      { e: 33, s:  69},
-      { e: 57, s:  69},
-      { e: 57, s: 63 },
-      { e: 81, s: 63 },
-      { e: 81, s: 75 },
-      { e: 87, s:  75},
-      { e: 87, s: 51 },
-      { e: 75, s: 51 },
-      { e: 75, s: 57 },
-      { e: 45, s: 57 },
-      { e: 45, s:  51},
-      { e: 69, s:  51},
-      { e: 69, s:  45},
-      { e: 81, s: 45 },
-      { e: 81, s: 39 },
-      { e: 69, s: 39 },
-      { e: 69, s: 21 },
-      { e: 57, s:  21},
-      { e: 57, s: 39 },
-      { e:51 , s: 39 },
-      { e: 51, s: 15 },
-      { e: 69, s: 15 },
-      { e: 69, s: 9 },
-      { e:45, s: 9 },
-      { e: 45, s: 18 },
-      { e: 39, s: 18 },
-      { e:39 , s: 9 },
-      { e: 13, s:  8}
-    ]
-  },
-  "3F": {
-    label: "미로 3층",
-    raw: [
-  { e: 96, s: 4 },
-  { e: 96, s:  10},
-  { e: 137, s:  11},
-  { e: 147, s:  23},
-  { e: 150, s: 27 },
-  { e: 155, s: 39 },
-  { e:150 , s: 44 },
-  { e: 154, s: 51 },
-  { e: 157, s: 61 },
-  { e: 164, s: 71 },
-  { e: 171, s: 84 },
-  { e: 176, s: 93 },
-  { e: 173, s: 101 },
-  { e: 165, s:  114},
-  { e: 170, s:  118},
-  { e: 164, s: 129 },
-  { e: 156, s: 140 },
-  { e: 144, s: 153 },
-  { e: 132, s: 165 },
-  { e: 59, s:  165},
-  { e: 64, s: 158 },
-  { e: 121, s:  158},
-  { e: 120, s:  144},
-  { e: 76, s:  144},
-  { e: 76, s: 136 },
-  { e: 74, s: 132 },
-  { e: 67, s: 122 },
-  { e: 60, s: 111 },
-  { e: 64, s: 106 },
-  { e: 59, s: 92 },
-  { e: 51, s:  82},
-  { e: 57, s: 73 },
-  { e: 63, s: 63 },
-  { e: 69, s: 52 },
-  { e: 72, s: 46 },
-  { e: 76, s:  42},
-  { e: 96, s: 42 },
-  { e: 117, s:  42},
-  { e: 122, s: 46 },
-  { e: 123, s:  53},
-  { e: 119, s: 58 },
-  { e: 121, s: 62 },
-  { e: 126, s: 70 },
-  { e: 131, s: 80 },
-  { e: 135, s: 89 },
-  { e: 126, s: 102 },
-  { e:117, s: 113 },
-  { e: 110, s: 122 },
-  { e: 91, s:  123},
-  { e: 87, s: 120 },
-  { e: 80, s: 110 },
-  { e: 73, s: 100 },
-  { e: 68, s: 92 },
-  { e: 65, s: 85 },
-  { e: 68, s: 79 },
-  { e: 72, s: 75 },
-  { e: 71, s: 73 },
-  { e: 75, s: 68 },
-  { e: 79, s: 64 },
-  { e: 106, s: 63 },
-  { e: 110, s: 75 },
-  { e: 106, s: 79 },
-  { e: 96, s: 71 },
-  { e: 90, s:  72},
-  { e: 86, s: 80 },
-  { e: 87, s: 88 },
-  { e: 95, s:  88},
-  { e: 102, s:  93}
-  ]
-  },
-  "4F": {
-    label: "끈돌",
-    raw: [
-  {e : 4, s : 6},
-  { e: 4, s: 12 },
-  { e: 10, s: 12 },
-  { e: 10, s: 35 },
-  { e: 16, s: 35 },
-  { e: 16, s: 12 },
-  { e: 36, s: 12 },
-  { e: 36, s: 18 },
-  { e: 22, s: 18 },
-  { e: 22, s: 24 },
-  { e: 36, s: 24 },
-  { e: 36, s: 30 },
-  { e: 22, s: 30 },
-  { e: 22, s: 36 },
-  { e: 45, s: 36 },
-  { e: 45, s: 42 },
-  { e: 30, s: 42 },
-  { e: 30, s: 48 },
-  { e: 51, s: 48 },
-  { e: 51, s: 42 },
-  { e: 78, s: 42 },
-  { e: 78, s: 36 },
-  { e: 84, s: 36 },
-  { e: 84, s: 48 },
-  { e: 108, s: 48 },
-  { e: 108, s: 66 },
-  { e: 114, s: 66 },
-  { e: 114, s: 48 },
-  { e: 120, s: 48 },
-  { e: 120, s: 57 },
-  { e: 138, s: 57 },
-  { e: 138, s: 48 },
-  { e: 162, s: 48 },
-  { e: 162, s: 18 },
-  { e: 156, s: 18 },
-  { e: 156, s: 6 },
-  { e: 198, s: 6 },
-  { e: 198, s: 27 },
-  { e: 204, s: 27 },
-  { e: 204, s: 6 },
-  { e: 240, s: 6 },
-  { e: 240, s: 18 },
-  { e: 264, s: 18 },
-  { e: 264, s: 12 },
-  { e: 246, s: 12 },
-  { e: 246, s: 6 },
-  { e: 270, s: 6 },
-  { e: 270, s: 24},
-  { e: 276, s:  24},
-  { e: 276, s:  6},
-  { e: 288, s:  6},
-  { e: 288, s:  36},
-  { e: 270, s:  36},
-  { e: 270, s:  42},
-  { e: 264, s:  42},
-  { e: 264, s: 30 },
-  { e: 258, s: 30 },
-  { e: 258, s: 48},
-  { e: 281, s: 48 },
-  { e: 252, s: 48 },
-  { e: 252, s: 24 },
-  { e: 234, s: 24 },
-  { e: 234, s: 14 },
-  { e: 216, s: 14 },
-  { e: 216, s: 21 },
-  { e: 210, s:  21},
-  { e: 210, s:  33},
-  { e: 180, s: 33 },
-  { e: 180, s: 48 },
-  { e: 174, s: 48 },
-  { e: 174, s:  27},
-  { e: 186, s: 27 },
-  { e: 186, s: 12 },
-  { e: 180, s: 12 },
-  { e:180 , s: 21 },
-  { e: 174, s:  21},
-  { e: 174, s: 12 },
-  { e: 163, s: 12 },
-  { e: 168, s: 12 },
-  { e: 168, s: 54 },
-  { e: 145, s: 54 }
-  ]
-}
-};
-
+  const FLOOR_PATHS = {
+    "1F": {
+      label: "미로 1층",
+      raw: [
+        {e:4,s:6},{e:4,s:12},{e:10,s:12},{e:10,s:35},{e:16,s:35},{e:16,s:12},
+        {e:36,s:12},{e:36,s:18},{e:22,s:18},{e:22,s:24},{e:36,s:24},{e:36,s:30},
+        {e:22,s:30},{e:22,s:36},{e:45,s:36},{e:45,s:42},{e:30,s:42},{e:30,s:48},
+        {e:51,s:48},{e:51,s:42},{e:78,s:42},{e:78,s:36},{e:84,s:36},{e:84,s:48},
+        {e:108,s:48},{e:108,s:66},{e:114,s:66},{e:114,s:48},{e:120,s:48},{e:120,s:57},
+        {e:138,s:57},{e:138,s:48},{e:162,s:48},{e:162,s:18},{e:156,s:18},{e:156,s:6},
+        {e:198,s:6},{e:198,s:27},{e:204,s:27},{e:204,s:6},{e:240,s:6},{e:240,s:18},
+        {e:264,s:18},{e:264,s:12},{e:246,s:12},{e:246,s:6},{e:270,s:6},{e:270,s:24},
+        {e:276,s:24},{e:276,s:6},{e:288,s:6},{e:288,s:36},{e:270,s:36},{e:270,s:42},
+        {e:288,s:42},{e:288,s:72},{e:264,s:72},{e:264,s:78},{e:288,s:78},{e:288,s:121},
+        {e:252,s:121},{e:252,s:133},{e:258,s:133},{e:258,s:127},{e:288,s:127},{e:288,s:133},
+        {e:264,s:133},{e:264,s:139},{e:240,s:140},{e:240,s:152},{e:246,s:152},{e:246,s:146},
+        {e:270,s:146},{e:270,s:140},{e:288,s:140},{e:288,s:158},{e:282,s:158},{e:282,s:146},
+        {e:276,s:146},{e:276,s:164},{e:288,s:164},{e:289,s:168}
+      ]
+    },
+    "2F": {
+      label: "미로 2층",
+      raw: [
+        {e:232,s:12},{e:231,s:87},{e:225,s:87},{e:225,s:63},{e:219,s:63},{e:219,s:81},
+        {e:213,s:81},{e:213,s:57},{e:207,s:57},{e:207,s:75},{e:201,s:75},{e:201,s:57},
+        {e:195,s:57},{e:195,s:75},{e:183,s:75},{e:183,s:105},{e:195,s:105},{e:195,s:117},
+        {e:201,s:117},{e:201,s:135},{e:195,s:135},{e:195,s:123},{e:189,s:123},{e:189,s:135},
+        {e:183,s:135},{e:183,s:111},{e:177,s:111},{e:177,s:87},{e:171,s:87},{e:171,s:99},
+        {e:165,s:99},{e:165,s:87},{e:147,s:87},{e:147,s:75},{e:141,s:75},{e:141,s:98},
+        {e:153,s:99},{e:153,s:105},{e:135,s:105},{e:135,s:75},{e:129,s:75},{e:129,s:111},
+        {e:132,s:111},{e:132,s:120},{e:126,s:120},{e:126,s:117},{e:123,s:117},{e:123,s:93},
+        {e:99,s:93},{e:99,s:99},{e:117,s:99},{e:117,s:123},{e:120,s:123},{e:120,s:135},
+        {e:114,s:135},{e:114,s:129},{e:111,s:129},{e:111,s:123},{e:87,s:123},{e:87,s:117},
+        {e:111,s:117},{e:111,s:105},{e:93,s:105},{e:93,s:93},{e:87,s:93},{e:87,s:105},
+        {e:81,s:105},{e:81,s:87},{e:75,s:87},{e:75,s:99},{e:63,s:99},{e:63,s:105},
+        {e:75,s:105},{e:75,s:117},{e:69,s:117},{e:69,s:129},{e:63,s:129},{e:63,s:123},
+        {e:51,s:123},{e:51,s:129},{e:33,s:129},{e:33,s:147},{e:27,s:147},{e:27,s:123},
+        {e:45,s:123},{e:45,s:117},{e:63,s:117},{e:63,s:111},{e:45,s:111},{e:45,s:81},
+        {e:57,s:81},{e:57,s:75},{e:33,s:75},{e:33,s:69},{e:57,s:69},{e:57,s:63},
+        {e:81,s:63},{e:81,s:75},{e:87,s:75},{e:87,s:51},{e:75,s:51},{e:75,s:57},
+        {e:45,s:57},{e:45,s:51},{e:69,s:51},{e:69,s:45},{e:81,s:45},{e:81,s:39},
+        {e:69,s:39},{e:69,s:21},{e:57,s:21},{e:57,s:39},{e:51,s:39},{e:51,s:15},
+        {e:69,s:15},{e:69,s:9},{e:45,s:9},{e:45,s:18},{e:39,s:18},{e:39,s:9},
+        {e:13,s:8}
+      ]
+    },
+    "3F": {
+      label: "미로 3층",
+      raw: [
+        {e:96,s:4},{e:96,s:10},{e:137,s:11},{e:147,s:23},{e:150,s:27},{e:155,s:39},
+        {e:150,s:44},{e:154,s:51},{e:157,s:61},{e:164,s:71},{e:171,s:84},{e:176,s:93},
+        {e:173,s:101},{e:165,s:114},{e:170,s:118},{e:164,s:129},{e:156,s:140},{e:144,s:153},
+        {e:132,s:165},{e:59,s:165},{e:64,s:158},{e:121,s:158},{e:120,s:144},{e:76,s:144},
+        {e:76,s:136},{e:74,s:132},{e:67,s:122},{e:60,s:111},{e:64,s:106},{e:59,s:92},
+        {e:51,s:82},{e:57,s:73},{e:63,s:63},{e:69,s:52},{e:72,s:46},{e:76,s:42},
+        {e:96,s:42},{e:117,s:42},{e:122,s:46},{e:123,s:53},{e:119,s:58},{e:121,s:62},
+        {e:126,s:70},{e:131,s:80},{e:135,s:89},{e:126,s:102},{e:117,s:113},{e:110,s:122},
+        {e:91,s:123},{e:87,s:120},{e:80,s:110},{e:73,s:100},{e:68,s:92},{e:65,s:85},
+        {e:68,s:79},{e:72,s:75},{e:71,s:73},{e:75,s:68},{e:79,s:64},{e:106,s:63},
+        {e:110,s:75},{e:106,s:79},{e:96,s:71},{e:90,s:72},{e:86,s:80},{e:87,s:88},
+        {e:95,s:88},{e:102,s:93}
+      ]
+    },
+    "4F": {
+      label: "끈돌",
+      raw: [
+        {e:4,s:6},{e:4,s:12},{e:10,s:12},{e:10,s:35},{e:16,s:35},{e:16,s:12},
+        {e:36,s:12},{e:36,s:18},{e:22,s:18},{e:22,s:24},{e:36,s:24},{e:36,s:30},
+        {e:22,s:30},{e:22,s:36},{e:45,s:36},{e:45,s:42},{e:30,s:42},{e:30,s:48},
+        {e:51,s:48},{e:51,s:42},{e:78,s:42},{e:78,s:36},{e:84,s:36},{e:84,s:48},
+        {e:108,s:48},{e:108,s:66},{e:114,s:66},{e:114,s:48},{e:120,s:48},{e:120,s:57},
+        {e:138,s:57},{e:138,s:48},{e:162,s:48},{e:162,s:18},{e:156,s:18},{e:156,s:6},
+        {e:198,s:6},{e:198,s:27},{e:204,s:27},{e:204,s:6},{e:240,s:6},{e:240,s:18},
+        {e:264,s:18},{e:264,s:12},{e:246,s:12},{e:246,s:6},{e:270,s:6},{e:270,s:24},
+        {e:276,s:24},{e:276,s:6},{e:288,s:6},{e:288,s:36},{e:270,s:36},{e:270,s:42},
+        {e:264,s:42},{e:264,s:30},{e:258,s:30},{e:258,s:48},{e:281,s:48},{e:252,s:48},
+        {e:252,s:24},{e:234,s:24},{e:234,s:14},{e:216,s:14},{e:216,s:21},{e:210,s:21},
+        {e:210,s:33},{e:180,s:33},{e:180,s:48},{e:174,s:48},{e:174,s:27},{e:186,s:27},
+        {e:186,s:12},{e:180,s:12},{e:180,s:21},{e:174,s:21},{e:174,s:12},{e:163,s:12},
+        {e:168,s:12},{e:168,s:54},{e:145,s:54}
+      ]
+    }
+  };
 
   function expandPath(nodes) {
     const out = [];
@@ -746,7 +586,6 @@ const FLOOR_PATHS = {
     return out;
   }
 
-  // 층별 확장 경로 캐시
   const FLOOR_PATH_POINTS = {};
   for (const id in FLOOR_PATHS) {
     FLOOR_PATH_POINTS[id] = expandPath(FLOOR_PATHS[id].raw);
@@ -786,17 +625,13 @@ const FLOOR_PATHS = {
     applyFloor(floorSelect.value, true);
   });
 
-  // 경로/네비 관련 상수
   const PATH_SNAP_MAX_DIST  = 2;
   const LOOK_AHEAD_SEGMENTS = 25;
   const AUTO_FLOORS         = ["1F", "2F", "3F"];
   const AUTO_FLOOR_MAX_DIST = 3;
-const FLOOR_CHANGE_MARGIN = 1;      // 새 층이 현재 층보다 최소 1칸 이상 더 가까워야 전환
-const FLOOR_ORDER = {               // 층 순서(직접 점프 금지용)
-  "1F": 1,
-  "2F": 2,
-  "3F": 3
-};
+  const FLOOR_CHANGE_MARGIN = 1;
+  const FLOOR_ORDER = { "1F":1, "2F":2, "3F":3 };
+
   const CHAR_OFFSET_X = 0;
   const CHAR_OFFSET_Y = 14;
   const TILE_STEP_X   = 32;
@@ -822,61 +657,42 @@ const FLOOR_ORDER = {               // 층 순서(직접 점프 금지용)
     return res.index;
   }
 
-function autoDetectFloorByCoord(e, s) {
-  // 4층(끈돌)은 항상 수동
-  if (currentFloorId === "4F") return false;
-  if (e == null || s == null) return false;
+  function autoDetectFloorByCoord(e, s) {
+    if (currentFloorId === "4F") return false;
+    if (e == null || s == null) return false;
 
-  // 1) 현재 층에서의 거리 계산
-  const curPts = FLOOR_PATH_POINTS[currentFloorId];
-  const curRes = findClosestIndexOnPath(e, s, curPts);
-  const curDist = curRes.dist;
+    const curPts = FLOOR_PATH_POINTS[currentFloorId];
+    const curRes = findClosestIndexOnPath(e, s, curPts);
+    const curDist = curRes.dist;
 
-  // 기본값은 "지금 층 유지"
-  let bestFloor = currentFloorId;
-  let bestDist  = curDist;
+    let bestFloor = currentFloorId;
+    let bestDist  = curDist;
 
-  // 2) 나머지 층들과 거리 비교
-  for (const floorId of AUTO_FLOORS) {
-    if (floorId === currentFloorId) continue;
+    for (const floorId of AUTO_FLOORS) {
+      if (floorId === currentFloorId) continue;
 
-    const pts = FLOOR_PATH_POINTS[floorId];
-    if (!pts || !pts.length) continue;
+      const pts = FLOOR_PATH_POINTS[floorId];
+      if (!pts || !pts.length) continue;
 
-    const res = findClosestIndexOnPath(e, s, pts);
-
-    // 새 층이 현재 층보다 FLOOR_CHANGE_MARGIN 이상 더 가까울 때만 교체
-    if (res.dist + FLOOR_CHANGE_MARGIN < bestDist) {
-      bestDist  = res.dist;
-      bestFloor = floorId;
+      const res = findClosestIndexOnPath(e, s, pts);
+      if (res.dist + FLOOR_CHANGE_MARGIN < bestDist) {
+        bestDist  = res.dist;
+        bestFloor = floorId;
+      }
     }
+
+    if (bestFloor === currentFloorId) return false;
+    if (bestDist > AUTO_FLOOR_MAX_DIST) return false;
+    if (FLOOR_ORDER[bestFloor] < FLOOR_ORDER[currentFloorId]) return false;
+    if (Math.abs(FLOOR_ORDER[bestFloor] - FLOOR_ORDER[currentFloorId]) > 1) return false;
+
+    console.log(
+      `auto floor change: ${currentFloorId} → ${bestFloor} (curDist=${curDist}, bestDist=${bestDist})`
+    );
+
+    applyFloor(bestFloor, false);
+    return true;
   }
-
-  // 3) 결국 현재 층이 제일 낫다 → 전환 안 함
-  if (bestFloor === currentFloorId) return false;
-
-  // 4) 너무 멀면(오인 가능 영역) 전환 안 함
-  if (bestDist > AUTO_FLOOR_MAX_DIST) return false;
-
-  // 5) 자동 하강 금지: 새 층이 현재 층보다 낮으면 무시
-  if (FLOOR_ORDER[bestFloor] < FLOOR_ORDER[currentFloorId]) {
-    return false;
-  }
-
-  // 6) 한 번에 2층 이상 점프(예: 3F→1F)는 금지
-  if (Math.abs(FLOOR_ORDER[bestFloor] - FLOOR_ORDER[currentFloorId]) > 1) {
-    return false;
-  }
-
-  console.log(
-    `auto floor change: ${currentFloorId} → ${bestFloor} (curDist=${curDist}, bestDist=${bestDist})`
-  );
-
-  // 경로만 교체, 히스토리는 그대로 두고 연결해서 그릴 수 있게
-  applyFloor(bestFloor, false);
-  return true;
-}
-
 
   function esToScreenOffset(dE, dS) {
     const dx = TILE_STEP_X * (dE + dS);
@@ -927,6 +743,142 @@ function autoDetectFloorByCoord(e, s) {
     drawNavPathFrom(idx);
   }
 
+function collectAllServerDataToJson() {
+  const servers = {};
+  if (!serverSelect) return { version: 1, servers: {} };
+
+  const serverIds = Array.from(serverSelect.options).map(o => o.value);
+
+  for (const id of serverIds) {
+    // rect
+    let rect = null;
+    try {
+      const rectText = localStorage.getItem(RECT_STORAGE_PREFIX + id);
+      if (rectText) rect = JSON.parse(rectText);
+    } catch (e) {
+      console.error('rect parse error for', id, e);
+    }
+
+    // templates
+    let templates = null;
+    try {
+      const tmplText = localStorage.getItem(TEMPLATE_STORAGE_PREFIX + id);
+      if (tmplText) templates = JSON.parse(tmplText);
+    } catch (e) {
+      console.error('tmpl parse error for', id, e);
+    }
+
+    if (rect || templates) {
+      servers[id] = {};
+      if (rect)      servers[id].rect      = rect;
+      if (templates) servers[id].templates = templates;
+    }
+  }
+
+  return {
+    version: 1,
+    servers
+  };
+}
+
+function exportConfigJson() {
+  const data = collectAllServerDataToJson();
+  const json = JSON.stringify(data, null, 2);
+
+  const blob = new Blob([json], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url;
+  a.download = 'majyu_ocr_servers.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  alert('현재 localStorage에 저장된 서버별 설정을 JSON으로 내보냈습니다.');
+}
+function applyImportedServerData(data) {
+  if (!data || !data.servers) {
+    alert('JSON에 "servers" 항목이 없습니다.');
+    return;
+  }
+
+  const servers = data.servers;
+  const serverIds = Object.keys(servers);
+
+  if (!serverIds.length) {
+    alert('불러올 서버 설정이 없습니다.');
+    return;
+  }
+
+  for (const id of serverIds) {
+    const entry = servers[id];
+    if (!entry) continue;
+
+    // rect 복원
+    if (entry.rect) {
+      try {
+        localStorage.setItem(
+          RECT_STORAGE_PREFIX + id,
+          JSON.stringify(entry.rect)
+        );
+        if (id === currentServerId) {
+          applyRectConfigToInputs(entry.rect);
+        }
+      } catch (e) {
+        console.error('import rect error for', id, e);
+      }
+    }
+
+    // templates 복원
+    if (entry.templates) {
+      try {
+        localStorage.setItem(
+          TEMPLATE_STORAGE_PREFIX + id,
+          JSON.stringify(entry.templates)
+        );
+
+        if (id === currentServerId) {
+          // digitTemplates 배열에도 반영
+          for (let d = 0; d <= 9; d++) {
+            const key = String(d);
+            if (entry.templates[key]) {
+              digitTemplates[d] = new Uint8Array(entry.templates[key]);
+            } else {
+              digitTemplates[d] = null;
+            }
+          }
+        }
+      } catch (e) {
+        console.error('import templates error for', id, e);
+      }
+    }
+  }
+
+  // 현재 서버 템플릿 상태 업데이트
+  updateTemplateStatus();
+  alert('JSON 설정을 불러와서 localStorage에 적용했습니다.');
+}
+
+function importConfigJsonFromFile(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const text = e.target.result;
+      const data = JSON.parse(text);
+      applyImportedServerData(data);
+    } catch (err) {
+      console.error('JSON import error:', err);
+      alert('JSON 파싱 중 오류가 발생했습니다.\n' + err.message);
+    }
+  };
+  reader.readAsText(file, 'utf-8');
+}
+
+
+  
+
+  
   // ===== 3. OCR 공통 및 템플릿 =====
   let currentEast  = null;
   let currentSouth = null;
@@ -972,12 +924,19 @@ function autoDetectFloorByCoord(e, s) {
   const DIGIT_H = 14;
 
   const BUILTIN_TEMPLATES = { 
-    "0":[0,0,0,255,255,255,0,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,0,255,255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], "1":[0,0,0,0,255,255,0,0,0,0,255,255,255,255,0,0,0,0,0,0,255,255,0,0,0,0,0,0,255,255,0,0,0,0,0,0,255,255,0,0,0,0,0,0,255,255,0,0,0,0,0,0,255,255,0,0,0,0,0,0,255,255,0,0,0,0,0,0,255,255,0,0,0,0,0,0,255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], "2":[0,0,0,255,255,255,0,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,0,0,0,255,0,0,0,0,0,0,255,0,0,0,0,0,0,255,0,0,0,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,0,0,0,0,255,255,255,255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], "3":[0,0,0,255,255,255,0,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,0,0,255,255,0,0,0,0,0,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,0,255,255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], "4":[0,0,0,0,0,255,0,0,0,0,0,0,255,255,0,0,0,0,0,0,255,255,0,0,0,0,0,255,0,255,0,0,0,0,0,255,0,255,0,0,0,0,255,0,0,255,0,0,0,0,255,0,0,255,0,0,0,0,255,255,255,255,255,0,0,0,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], "5":[0,0,255,255,255,255,255,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,0,0,0,0,255,255,255,255,0,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,0,255,255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], "6":[0,0,0,255,255,255,0,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,0,0,0,0,255,255,255,255,0,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,0,255,255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], "7":[0,0,255,255,255,255,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], "8":[0,0,0,255,255,255,0,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,0,255,255,255,0,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,0,255,255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], "9":[0,0,0,255,255,255,0,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,0,255,255,255,255,0,0,0,0,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,0,255,255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-   };
+    "0":[0,0,0,255,255,255,0,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,0,255,255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    "1":[0,0,0,0,255,255,0,0,0,0,255,255,255,255,0,0,0,0,0,0,255,255,0,0,0,0,0,0,255,255,0,0,0,0,0,0,255,255,0,0,0,0,0,0,255,255,0,0,0,0,0,0,255,255,0,0,0,0,0,0,255,255,0,0,0,0,0,0,255,255,0,0,0,0,0,0,255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    "2":[0,0,0,255,255,255,0,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,0,0,0,255,0,0,0,0,0,0,255,0,0,0,0,0,0,255,0,0,0,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,0,0,0,0,255,255,255,255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    "3":[0,0,0,255,255,255,0,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,0,0,255,255,0,0,0,0,0,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,0,255,255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    "4":[0,0,0,0,0,255,0,0,0,0,0,0,255,255,0,0,0,0,0,0,255,255,0,0,0,0,0,255,0,255,0,0,0,0,0,255,0,255,0,0,0,0,255,0,0,255,0,0,0,0,255,0,0,255,0,0,0,0,255,255,255,255,255,0,0,0,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    "5":[0,0,255,255,255,255,255,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,0,0,0,0,255,255,255,255,0,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,0,255,255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    "6":[0,0,0,255,255,255,0,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,0,0,0,0,255,255,255,255,0,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,0,255,255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    "7":[0,0,255,255,255,255,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    "8":[0,0,0,255,255,255,0,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,0,255,255,255,0,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,0,255,255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    "9":[0,0,0,255,255,255,0,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,0,255,255,255,255,0,0,0,0,0,0,0,255,0,0,0,0,0,0,0,255,0,0,0,255,0,0,0,255,0,0,0,0,255,255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+  };
 
   const digitTemplates = { 0:null,1:null,2:null,3:null,4:null,5:null,6:null,7:null,8:null,9:null };
-
-  const TEMPLATE_STORAGE_KEY = 'saDigitTemplates.v1';
 
   function updateTemplateStatus() {
     if (!templateStatus) return;
@@ -986,7 +945,8 @@ function autoDetectFloorByCoord(e, s) {
       if (digitTemplates[d]) have.push(d);
     }
     templateStatus.textContent =
-      '템플릿 상태: ' + (have.length ? have.join(', ') + ' 학습됨' : '없음');
+      '템플릿 상태 [' + currentServerId + ']: ' +
+      (have.length ? have.join(', ') + ' 학습됨' : '없음');
   }
 
   function saveTemplatesToStorage() {
@@ -996,22 +956,23 @@ function autoDetectFloorByCoord(e, s) {
         const tmpl = digitTemplates[d];
         if (tmpl) obj[d] = Array.from(tmpl);
       }
-      localStorage.setItem(TEMPLATE_STORAGE_KEY, JSON.stringify(obj));
+      localStorage.setItem(TEMPLATE_STORAGE_PREFIX + currentServerId, JSON.stringify(obj));
     } catch (e) {
       console.error('saveTemplatesToStorage error:', e);
     }
   }
 
   function loadTemplatesFromStorage() {
+    for (let d = 0; d <= 9; d++) digitTemplates[d] = null;
     try {
       let source = null;
-      const text = localStorage.getItem(TEMPLATE_STORAGE_KEY);
+      const text = localStorage.getItem(TEMPLATE_STORAGE_PREFIX + currentServerId);
       if (text) {
         source = JSON.parse(text);
-        console.log('templates loaded from localStorage');
+        console.log('templates loaded from localStorage for', currentServerId);
       } else if (BUILTIN_TEMPLATES) {
         source = BUILTIN_TEMPLATES;
-        console.log('templates loaded from BUILTIN_TEMPLATES');
+        console.log('templates loaded from BUILTIN_TEMPLATES for', currentServerId);
       }
       if (!source) return;
       for (let d = 0; d <= 9; d++) {
@@ -1159,7 +1120,7 @@ function autoDetectFloorByCoord(e, s) {
     }
     updateTemplateStatus();
     saveTemplatesToStorage();
-    alert(`숫자 ${valueStr} 에 대한 템플릿을 갱신했습니다.`);
+    alert(`숫자 ${valueStr} 에 대한 템플릿을 갱신했습니다.\n(서버: ${currentServerId})`);
   }
 
   function readNumberByTemplate(rect, preview=false) {
@@ -1232,6 +1193,7 @@ function autoDetectFloorByCoord(e, s) {
       }
 
       ocrResultDiv.textContent =
+        `서버: ${currentServerId}\n` +
         `동 digits: ${east.digits.join('')} → raw=${rawEastVal}, maj=${eastMaj.value}\n` +
         `남 digits: ${south.digits.join('')} → raw=${rawSouthVal}, maj=${southMaj.value}\n` +
         `적용 좌표: 동 ${currentEast}, 남 ${currentSouth}`;
@@ -1308,11 +1270,8 @@ function autoDetectFloorByCoord(e, s) {
     currentSouth = null;
     updateTemplateStatus();
     saveTemplatesToStorage();
-    alert('모든 숫자 템플릿을 초기화했습니다.');
+    alert(`모든 숫자 템플릿을 초기화했습니다.\n(서버: ${currentServerId})`);
   });
-
-  loadTemplatesFromStorage();
-  updateTemplateStatus();
 
   window.addEventListener('keydown', (e) => {
     if (e.key === 'l' || e.key === 'L') {
@@ -1324,100 +1283,73 @@ function autoDetectFloorByCoord(e, s) {
     }
   });
 
-// ===== 4.y 네비게이션 Picture-in-Picture(PiP) =====
-async function enterNavPiP() {
-  if (!('pictureInPictureEnabled' in document)) {
-    alert('이 브라우저는 Picture-in-Picture 기능을 지원하지 않습니다.');
-    return;
-  }
-  if (!video.srcObject) {
-    alert('먼저 캡쳐를 시작해주세요.');
-    return;
-  }
-
-  try {
-    // 합성 렌더링 루프 시작
-    startPipRenderingLoop();
-
-    // pipCanvas 스트림을 PiP로 보내기
-    if (!pipVideo) {
-      pipVideo = document.createElement('video');
-      pipVideo.muted = true;
-      pipVideo.playsInline = true;
-      pipVideo.srcObject = pipCanvas.captureStream(30);
-
-      // ★ PiP 창을 X로 끄거나 "탭으로 돌아가기" 했을 때도 여기로 옴
-      pipVideo.addEventListener('leavepictureinpicture', () => {
-        exitNavPiP(true);   // fromEvent = true
-      });
+  // ===== 4.y 네비게이션 Picture-in-Picture(PiP) =====
+  async function enterNavPiP() {
+    if (!('pictureInPictureEnabled' in document)) {
+      alert('이 브라우저는 Picture-in-Picture 기능을 지원하지 않습니다.');
+      return;
+    }
+    if (!video.srcObject) {
+      alert('먼저 캡쳐를 시작해주세요.');
+      return;
     }
 
-    await pipVideo.play();
-    await pipVideo.requestPictureInPicture();
+    try {
+      startPipRenderingLoop();
 
-    pipActive = true;
-    pipBtn.textContent = '팝업 닫기';
-    setMainOverlayForPip(true);   // ★ 메인 화면을 검은 화면 + 문구로 교체
-  } catch (err) {
-    console.error(err);
-    alert('PiP 진입 중 오류가 발생했습니다.\n' + err.message);
-    stopPipRenderingLoop();
-  }
-}
+      if (!pipVideo) {
+        pipVideo = document.createElement('video');
+        pipVideo.muted = true;
+        pipVideo.playsInline = true;
+        pipVideo.srcObject = pipCanvas.captureStream(30);
 
-/**
- * fromEvent:
- *  - 사용자가 PiP 창에서 직접 닫았을 때 → true
- *  - 페이지 버튼으로 닫을 때 → false
- */
-async function exitNavPiP(fromEvent = false) {
-  try {
-    // 이벤트에서 온 경우에는 이미 PiP가 종료된 상태일 수 있으므로 재호출 금지
-    if (!fromEvent && document.pictureInPictureElement === pipVideo) {
-      await document.exitPictureInPicture();
+        pipVideo.addEventListener('leavepictureinpicture', () => {
+          exitNavPiP(true);
+        });
+      }
+
+      await pipVideo.play();
+      await pipVideo.requestPictureInPicture();
+
+      pipActive = true;
+      pipBtn.textContent = 'PiP 닫기';
+      setMainOverlayForPip(true);
+    } catch (err) {
+      console.error(err);
+      alert('PiP 진입 중 오류가 발생했습니다.\n' + err.message);
+      stopPipRenderingLoop();
     }
-  } catch (err) {
-    console.error(err);
-  } finally {
-    pipActive = false;
-    pipBtn.textContent = 'pip모드로 보기';
-    stopPipRenderingLoop();
-    setMainOverlayForPip(false);   // ★ 메인 화면 복원
-  }
-}
-
-pipBtn.addEventListener('click', () => {
-  // 다른 요소가 PiP 중이면 우선 종료
-  if (document.pictureInPictureElement &&
-      document.pictureInPictureElement !== pipVideo) {
-    document.exitPictureInPicture().catch(()=>{});
-    return;
   }
 
-  if (!pipActive) {
-    // 켜기
-    enterNavPiP();
-  } else {
-    // 끄기(페이지 버튼으로 끌 때)
-    exitNavPiP(false);
+  async function exitNavPiP(fromEvent = false) {
+    try {
+      if (!fromEvent && document.pictureInPictureElement === pipVideo) {
+        await document.exitPictureInPicture();
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      pipActive = false;
+      pipBtn.textContent = 'PiP 모드';
+      stopPipRenderingLoop();
+      setMainOverlayForPip(false);
+    }
   }
-});
 
-// ★ 더 이상 document 단위의 leavepictureinpicture 리스너는 필요 없음
-// document.addEventListener('leavepictureinpicture', ...) 부분은 전부 삭제
+  pipBtn.addEventListener('click', () => {
+    if (document.pictureInPictureElement &&
+        document.pictureInPictureElement !== pipVideo) {
+      document.exitPictureInPicture().catch(()=>{});
+      return;
+    }
 
+    if (!pipActive) {
+      enterNavPiP();
+    } else {
+      exitNavPiP(false);
+    }
+  });
 
-  function handlePipLeave(event){
-  // 혹시 다른 video가 PiP를 썼을 경우 대비
-  if (event.target !== pipVideo) return;
-
-  pipActive = false;
-  pipBtn.textContent = 'pip모드로 보기';
-  stopPipRenderingLoop();
-  setMainOverlayForPip(false);   // ★ 메인 화면 복원(오버레이 숨기기)
-}
-
-  // ===== 4.x PiP용 합성 캔버스 렌더링 =====
   function startPipRenderingLoop() {
     if (pipAnimating) return;
     pipAnimating = true;
@@ -1432,15 +1364,12 @@ pipBtn.addEventListener('click', () => {
       const vw = video.videoWidth;
       const vh = video.videoHeight;
       if (vw && vh) {
-        // 캔버스 크기 동기화
         if (pipCanvas.width !== vw || pipCanvas.height !== vh) {
           pipCanvas.width  = vw;
           pipCanvas.height = vh;
         }
 
-        // 1) 게임 화면
         pipCtx.drawImage(video, 0, 0, pipCanvas.width, pipCanvas.height);
-        // 2) 네비 라인 캔버스
         pipCtx.drawImage(navCanvas, 0, 0, pipCanvas.width, pipCanvas.height);
       }
 
@@ -1453,7 +1382,6 @@ pipBtn.addEventListener('click', () => {
   function stopPipRenderingLoop() {
     pipAnimating = false;
   }
-
 
   // ===== 5. 관리자 모드  =====
   const adminToggleBtn = document.getElementById('adminToggle');
@@ -1501,11 +1429,82 @@ pipBtn.addEventListener('click', () => {
     if (isAdmin) disableAdmin();
     else enableAdmin();
   });
+
+  // ===== 서버 선택 초기화 / 전환 처리 =====
+  function initServerSelection(){
+    try{
+      const saved = localStorage.getItem(SERVER_ID_KEY);
+      if (saved) currentServerId = saved;
+    }catch(e){
+      console.error('read SERVER_ID_KEY error:', e);
+    }
+
+    if (serverSelect){
+      const has = Array.from(serverSelect.options).some(o => o.value === currentServerId);
+      if (!has && serverSelect.options.length){
+        currentServerId = serverSelect.options[0].value;
+      }
+      serverSelect.value = currentServerId;
+
+      serverSelect.addEventListener('change', () => {
+        const newId = serverSelect.value;
+        if (newId === currentServerId) return;
+
+        // 이전 서버 데이터 저장
+        saveRectsToStorage(currentServerId);
+        saveTemplatesToStorage();
+
+        // 서버 전환
+        currentServerId = newId;
+        try{
+          localStorage.setItem(SERVER_ID_KEY, currentServerId);
+        }catch(e){
+          console.error('write SERVER_ID_KEY error:', e);
+        }
+
+        // 새 서버 설정 로드
+        loadRectsFromStorage(currentServerId);
+        loadTemplatesFromStorage();
+        updateTemplateStatus();
+
+        if (exportConfigBtn) {
+  exportConfigBtn.addEventListener('click', () => {
+    exportConfigJson();
+  });
+}
+
+if (importConfigBtn && configFileInput) {
+  importConfigBtn.addEventListener('click', () => {
+    configFileInput.click();
+  });
+
+  configFileInput.addEventListener('change', (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    importConfigJsonFromFile(file);
+    // 한 번 사용 후 value 초기화 (같은 파일 다시 선택 가능하게)
+    e.target.value = '';
+  });
+}
+
+
+        // 상태 초기화
+        eastHistory  = [];
+        southHistory = [];
+        currentEast  = null;
+        currentSouth = null;
+        clearNavPath();
+        if (coordLive) coordLive.textContent = '현재 좌표: -';
+        if (ocrResultDiv) ocrResultDiv.textContent = 'OCR 결과가 여기 표시됩니다.';
+      });
+    }
+  }
+
+  // ===== 초기 실행 =====
+  initServerSelection();
+  loadRectsFromStorage(currentServerId);
+  loadTemplatesFromStorage();
+  updateTemplateStatus();
 </script>
 </body>
 </html>
-
-
-
-
-
