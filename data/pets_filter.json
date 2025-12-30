@@ -3105,7 +3105,7 @@
     "routeType": "포획"
   },
   {
-    "name": "쿠팡불가능",
+    "name": "쿠팡",
     "searchable": true,
     "grade": "일반",
     "attr": {
