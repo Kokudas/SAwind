@@ -1333,15 +1333,15 @@
       "풍": 8
     },
     "s0": {
-      "hp": 27.625,
-      "atk": 5.699,
-      "def": 5.24,
-      "agi": 5.525
+      "hp": 32.5,
+      "atk": 7.425,
+      "def": 5.444,
+      "agi": 6.5
     },
     "sg": {
       "hp": 8.693,
-      "atk": 1.793,
-      "def": 1.649,
+      "atk": 1.986,
+      "def": 1.456,
       "agi": 1.738
     },
     "route": "숲의 동굴 2층(동27 남34) 포획",
@@ -2656,16 +2656,16 @@
       "풍": 3
     },
     "s0": {
-      "hp": 27.8,
-      "atk": 5.73,
-      "def": 5.73,
-      "agi": 5.18
+      "hp": 32.699,
+      "atk": 7.464,
+      "def": 6.025,
+      "agi": 6.1
     },
     "sg": {
-      "hp": 8.75,
-      "atk": 2,
-      "def": 1.61,
-      "agi": 1.63
+      "hp": 8.747,
+      "atk": 1.996,
+      "def": 1.611,
+      "agi": 1.631
     },
     "route": "숲의 동굴 4층(동14 남8) 포획",
     "mount": true,
@@ -2710,15 +2710,15 @@
       "풍": 0
     },
     "s0": {
-      "hp": 31.95,
-      "atk": 5.746,
-      "def": 5.746,
-      "agi": 5.13
+      "hp": 35.5,
+      "atk": 7.285,
+      "def": 5.484,
+      "agi": 5.7
     },
     "sg": {
       "hp": 9.496,
-      "atk": 1.707,
-      "def": 1.707,
+      "atk": 1.948,
+      "def": 1.467,
       "agi": 1.524
     },
     "route": "쟈루 섬(동81 남1140) 포획",
@@ -4075,5 +4075,410 @@
     "mount": false,
     "img": "https://wind01.net/info/img/102738.gif",
     "routeType": "퀘스트"
+  },
+    {
+    "name": "보르비스",
+    "searchable": true,
+    "grade": "일반",
+    "attr": {
+      "지": 5,
+      "수": 5,
+      "화": 0,
+      "풍": 0
+    },
+    "s0": {
+      "hp": 54.375,
+      "atk": 11.118,
+      "def": 7.743,
+      "agi": 7.875
+    },
+    "sg": {
+      "hp": 10.331,
+      "atk": 2.112,
+      "def": 1.471,
+      "agi": 1.496
+    },
+    "route": "하이하모 진입 퀘스트 보상",
+    "mount": false,
+    "img": "https://wind01.net/info/img/103204.gif",
+    "routeType": "퀘스트"
+  },
+    {
+    "name": "포레스트크랩",
+    "searchable": true,
+    "grade": "일반",
+    "attr": {
+      "지": 5,
+      "수": 5,
+      "화": 0,
+      "풍": 0
+    },
+    "s0": {
+      "hp": 48.9,
+      "atk": 8.395,
+      "def": 9.475,
+      "agi": 1.9
+    },
+    "sg": {
+      "hp": 11.613,
+      "atk": 1.993,
+      "def": 2.25,
+      "agi": 0.451
+    },
+    "route": "하이하모 섬(동260 남635) 포획",
+    "mount": false,
+    "img": "https://wind01.net/info/img/103097.gif",
+    "routeType": "포획"
+  },
+    {
+    "name": "포루나",
+    "searchable": true,
+    "grade": "일반",
+    "attr": {
+      "지": 4,
+      "수": 6,
+      "화": 0,
+      "풍": 0
+    },
+    "s0": {
+      "hp": 44.55,
+      "atk": 8.332,
+      "def": 5.56,
+      "agi": 6.93
+    },
+    "sg": {
+      "hp": 10.428,
+      "atk": 1.95,
+      "def": 1.301,
+      "agi": 1.622
+    },
+    "route": "하이하모 섬(동140 남830) 포획",
+    "mount": false,
+    "img": "https://wind01.net/info/img/103077.gif",
+    "routeType": "포획"
+  },
+    {
+    "name": "피피아",
+    "searchable": true,
+    "grade": "일반",
+    "attr": {
+      "지": 5,
+      "수": 5,
+      "화": 0,
+      "풍": 0
+    },
+    "s0": {
+      "hp": 41.47,
+      "atk": 7.848,
+      "def": 5.868,
+      "agi": 6.49
+    },
+    "sg": {
+      "hp": 10.084,
+      "atk": 1.908,
+      "def": 1.427,
+      "agi": 1.578
+    },
+    "route": "하이하모 섬(동325 남545) 포획",
+    "mount": false,
+    "img": "https://wind01.net/info/img/103079.gif",
+    "routeType": "포획"
+  },
+    {
+    "name": "그린고르",
+    "searchable": true,
+    "grade": "일반",
+    "attr": {
+      "지": 9,
+      "수": 1,
+      "화": 0,
+      "풍": 0
+    },
+    "s0": {
+      "hp": 58.63,
+      "atk": 11.433,
+      "def": 9.795,
+      "agi": 5.59
+    },
+    "sg": {
+      "hp": 10.711,
+      "atk": 2.088,
+      "def": 1.789,
+      "agi": 1.021
+    },
+    "route": "하이하모 신전 진입 퀘스트 보상",
+    "mount": true,
+    "img": "https://wind01.net/info/img/103092.gif",
+    "routeType": "퀘스트"
+  },
+    {
+    "name": "아코로비",
+    "searchable": true,
+    "grade": "일반",
+    "attr": {
+      "지": 2,
+      "수": 8,
+      "화": 0,
+      "풍": 0
+    },
+    "s0": {
+      "hp": 49.565,
+      "atk": 10.62,
+      "def": 6.687,
+      "agi": 6.785
+    },
+    "sg": {
+      "hp": 10.236,
+      "atk": 2.193,
+      "def": 1.381,
+      "agi": 1.401
+    },
+    "route": "하이하모 섬 (동298 남462) 포획",
+    "mount": false,
+    "img": "https://wind01.net/info/img/160195.gif",
+    "routeType": "포획"
+  },
+    {
+    "name": "황호",
+    "searchable": true,
+    "grade": "일반",
+    "attr": {
+      "지": 3,
+      "수": 0,
+      "화": 0,
+      "풍": 7
+    },
+    "s0": {
+      "hp": 52.375,
+      "atk": 10.793,
+      "def": 6.968,
+      "agi": 8.875
+    },
+    "sg": {
+      "hp": 9.951,
+      "atk": 2.05,
+      "def": 1.324,
+      "agi": 1.686
+    },
+    "route": "마리너스 목장의 의뢰 퀘스트 보상",
+    "mount": true,
+    "img": "https://wind01.net/info/img/160118.gif",
+    "routeType": "퀘스트"
+  },
+    {
+    "name": "이블티거",
+    "searchable": true,
+    "grade": "일반",
+    "attr": {
+      "지": 0,
+      "수": 0,
+      "화": 9,
+      "풍": 1
+    },
+    "s0": {
+      "hp": 51.875,
+      "atk": 12.243,
+      "def": 7.518,
+      "agi": 7.375
+    },
+    "sg": {
+      "hp": 9.856,
+      "atk": 2.326,
+      "def": 1.428,
+      "agi": 1.401
+    },
+    "route": "마리너스 목장의 의뢰 퀘스트 보상",
+    "mount": true,
+    "img": "https://wind01.net/info/img/160119.gif",
+    "routeType": "퀘스트"
+  },
+    {
+    "name": "청호",
+    "searchable": true,
+    "grade": "일반",
+    "attr": {
+      "지": 1,
+      "수": 9,
+      "화": 0,
+      "풍": 0
+    },
+    "s0": {
+      "hp": 56.625,
+      "atk": 11.143,
+      "def": 7.543,
+      "agi": 7.375
+    },
+    "sg": {
+      "hp": 10.758,
+      "atk": 2.117,
+      "def": 1.433,
+      "agi": 1.401
+    },
+    "route": "마리너스 목장의 의뢰 퀘스트 보상",
+    "mount": true,
+    "img": "https://wind01.net/info/img/160121.gif",
+    "routeType": "퀘스트"
+  },
+    {
+    "name": "흑호",
+    "searchable": true,
+    "grade": "일반",
+    "attr": {
+      "지": 0,
+      "수": 0,
+      "화": 5,
+      "풍": 5
+    },
+    "s0": {
+      "hp": 52.375,
+      "atk": 11.256,
+      "def": 6.756,
+      "agi": 8.625
+    },
+    "sg": {
+      "hp": 9.951,
+      "atk": 2.138,
+      "def": 1.283,
+      "agi": 1.638
+    },
+    "route": "마리너스 목장의 의뢰 퀘스트 보상",
+    "mount": true,
+    "img": "https://wind01.net/info/img/160122.gif",
+    "routeType": "퀘스트"
+  },
+    {
+    "name": "킹북이",
+    "searchable": true,
+    "grade": "일반",
+    "attr": {
+      "지": 5,
+      "수": 0,
+      "화": 0,
+      "풍": 5
+    },
+    "s0": {
+      "hp": 39.3,
+      "atk": 6.535,
+      "def": 10.855,
+      "agi": 1.9
+    },
+    "sg": {
+      "hp": 10.119,
+      "atk": 1.682,
+      "def": 2.795,
+      "agi": 0.489
+    },
+    "route": "아부의 지하동굴 6층 전지역",
+    "mount": true,
+    "img": "https://wind01.net/info/img/100839.gif",
+    "routeType": "포획"
+  },
+    {
+    "name": "노스키",
+    "searchable": true,
+    "grade": "일반",
+    "attr": {
+      "지": 0,
+      "수": 0,
+      "화": 2,
+      "풍": 8
+    },
+    "s0": {
+      "hp": 36.295,
+      "atk": 6.251,
+      "def": 5.18,
+      "agi": 6.715
+    },
+    "sg": {
+      "hp": 10.141,
+      "atk": 1.746,
+      "def": 1.447,
+      "agi": 1.876
+    },
+    "route": "천지 2층 전지역",
+    "mount": false,
+    "img": "https://wind01.net/info/img/100852.gif",
+    "routeType": "포획"
+  },
+      {
+    "name": "라스키",
+    "searchable": true,
+    "grade": "일반",
+    "attr": {
+      "지": 0,
+      "수": 0,
+      "화": 6,
+      "풍": 4
+    },
+    "s0": {
+      "hp": 36.125,
+      "atk": 7.05,
+      "def": 5.214,
+      "agi": 5.695
+    },
+    "sg": {
+      "hp": 10.093,
+      "atk": 1.97,
+      "def": 1.457,
+      "agi": 1.591
+    },
+    "route": "진홍 2층 전지역",
+    "mount": false,
+    "img": "https://wind01.net/info/img/100853.gif",
+    "routeType": "포획"
+  },
+      {
+    "name": "토끼",
+    "searchable": true,
+    "grade": "일반",
+    "attr": {
+      "지": 0,
+      "수": 10,
+      "화": 0,
+      "풍": 0
+    },
+    "s0": {
+      "hp": 38.845,
+      "atk": 6.353,
+      "def": 6.047,
+      "agi": 5.695
+    },
+    "sg": {
+      "hp": 10.853,
+      "atk": 1.775,
+      "def": 1.689,
+      "agi": 1.591
+    },
+    "route": "벽청 2층 전지역",
+    "mount": false,
+    "img": "https://wind01.net/info/img/100854.gif",
+    "routeType": "포획"
+  },
+      {
+    "name": "범링",
+    "searchable": true,
+    "grade": "일반",
+    "attr": {
+      "지": 6,
+      "수": 0,
+      "화": 0,
+      "풍": 4
+    },
+    "s0": {
+      "hp": 35.105,
+      "atk": 6.447,
+      "def": 6.294,
+      "agi": 5.525
+    },
+    "sg": {
+      "hp": 9.808,
+      "atk": 1.801,
+      "def": 1.758,
+      "agi": 1.543
+    },
+    "route": "유리 2층 전지역",
+    "mount": false,
+    "img": "https://wind01.net/info/img/100855.gif",
+    "routeType": "포획"
   }
 ]
