@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>📘 경험치 계산기</title>
+    <style>
+        :root {
+            --bg-color: #0b1220;
+            --card-bg: #161f30;
+            --text-color: #e0e0e0;
+            --accent-color: #ffd447;
+            --input-bg: #1e293b;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .calculator-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 450px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        h2 {
+            margin-top: 0;
+            color: var(--accent-color);
+            text-align: center;
+            font-size: 1.5rem;
+            border-bottom: 2px solid rgba(255,212,71,0.2);
+            padding-bottom: 10px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        label {
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+
+        input {
+            background: var(--input-bg);
+            border: 1px solid #334155;
+            padding: 12px;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            border-color: var(--accent-color);
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        #run { background: var(--accent-color); color: #000; }
+        #reset { background: #444; color: white; }
+        button:hover { opacity: 0.9; }
+
+        #results {
+            margin-top: 25px;
+            padding: 15px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .res-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            font-size: 0.95rem;
+        }
+
+        .res-val {
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+<div class="calculator-card">
+    <h2>📘 경험치 계산기 </h2>
+    
+    <div class="input-group">
+        <div class="field">
+            <label>현재 레벨</label>
+            <input type="number" id="currentLevel" placeholder="예: 1" min="1" max="138">
+        </div>
+        <div class="field">
+            <label>현재 경험치 (%)</label>
+            <input type="number" id="currentPercent" placeholder="0 ~ 99" min="0" max="99">
+        </div>
+        <div class="field">
+            <label>목표 레벨</label>
+            <input type="number" id="targetLevel" placeholder="예: 120" min="2" max="139">
+        </div>
+        <div class="field">
+            <label>시간당 획득 경험치</label>
+            <input type="number" id="xpPerHour" placeholder="경험치 획득량 입력">
+        </div>
+
+        <div class="btn-container">
+            <button id="run">계산하기</button>
+            <button id="reset">초기화</button>
+        </div>
+    </div>
+
+    <div id="results" style="display: none;">
+        <div class="res-item">
+            <span>남은 경험치</span>
+            <span id="statRemain" class="res-val">-</span>
+        </div>
+        <div class="res-item">
+            <span>예상 소요시간</span>
+            <span id="statHours" class="res-val">-</span>
+        </div>
+        <div class="res-item">
+            <span>일수 환산</span>
+            <span id="statDays" class="res-val">-</span>
+        </div>
+    </div>
+
+    <footer>© 2026 sup_bot </footer>
+</div>
+
+<script>
+    const EXP_TABLE = {
+        1: 2, 2: 6, 3: 14, 4: 30, 5: 54, 6: 89, 7: 135, 8: 198, 9: 550, 10: 742,
+        11: 974, 12: 1253, 13: 1576, 14: 1954, 15: 2386, 16: 2878, 17: 3432, 18: 4056, 19: 4749, 20: 5517,
+        21: 6363, 22: 7294, 23: 8309, 24: 9416, 25: 10616, 26: 11915, 27: 13314, 28: 14821, 29: 16435, 30: 18163,
+        31: 20010, 32: 21974, 33: 24067, 34: 26286, 35: 28638, 36: 31126, 37: 33757, 38: 36528, 39: 39450, 40: 42522,
+        41: 45750, 42: 49136, 43: 52688, 44: 56405, 45: 60293, 46: 64355, 47: 68598, 48: 73021, 49: 77632, 50: 61824,
+        51: 65570, 52: 69463, 53: 73510, 54: 77708, 55: 82064, 56: 86580, 57: 91260, 58: 96103, 59: 101117, 60: 127332,
+        61: 136094, 62: 145379, 63: 155222, 64: 165653, 65: 176707, 66: 188423, 67: 200839, 68: 214001, 69: 227950, 70: 242738,
+        71: 258418, 72: 275046, 73: 292681, 74: 311394, 75: 331249, 76: 352327, 77: 374710, 78: 398485, 79: 423751, 80: 563267,
+        81: 499148, 82: 530819, 83: 564539, 84: 600463, 85: 638759, 86: 679688, 87: 723214, 88: 771048, 89: 819600, 90: 872890,
+        91: 1487940, 92: 1591836, 93: 1684884, 94: 1803738, 95: 1925106, 96: 2053798, 97: 2196708, 98: 2348838, 99: 1413747, 100: 1583396,
+        101: 1773403, 102: 1986211, 103: 2224557, 104: 2491504, 105: 2790484, 106: 3125342, 107: 3500383, 108: 3920428, 109: 4390881, 110: 4917786,
+        111: 5507920, 112: 6168870, 113: 6909135, 114: 7738232, 115: 8666819, 116: 9706837, 117: 10871657, 118: 12176257, 119: 13637407, 120: 15273896,
+        121: 17106764, 122: 19159575, 123: 21458724, 124: 21363352, 125: 23926954, 126: 26798189, 127: 30013971, 128: 33615648, 129: 37649526, 130: 42167469,
+        131: 53131011, 132: 59506732, 133: 66647539, 134: 74645244, 135: 83602674, 136: 93634994, 137: 104871194, 138: 117455738, 139: 131550426
+    };
+
+    const runBtn = document.getElementById('run');
+    const resetBtn = document.getElementById('reset');
+    const resultBox = document.getElementById('results');
+
+    runBtn.addEventListener('click', () => {
+        const curLv = parseInt(document.getElementById('currentLevel').value);
+        const curPer = parseFloat(document.getElementById('currentPercent').value || 0);
+        const tarLv = parseInt(document.getElementById('targetLevel').value);
+        const xpPerHour = parseFloat(document.getElementById('xpPerHour').value);
+
+        if (isNaN(curLv) || isNaN(tarLv)) {
+            alert("레벨을 정확히 입력해주세요.");
+            return;
+        }
+
+        if (!EXP_TABLE[curLv] || !EXP_TABLE[tarLv]) {
+            alert("지원 레벨 범위: 1 ~ 139");
+            return;
+        }
+
+        if (curLv >= tarLv) {
+            alert("목표 레벨은 현재보다 높아야 합니다.");
+            return;
+        }
+
+        // 현재 레벨 구간의 전체 경험치량 계산
+        const nextLvExp = EXP_TABLE[curLv + 1] || EXP_TABLE[curLv];
+        const gap = nextLvExp - EXP_TABLE[curLv];
+        
+        // 현재 총 누적 경험치
+        const currentTotalExp = EXP_TABLE[curLv] + (gap * (curPer / 100));
+        const targetTotalExp = EXP_TABLE[tarLv];
+        const remainExp = targetTotalExp - currentTotalExp;
+
+        resultBox.style.display = 'block';
+        document.getElementById('statRemain').innerText = Math.max(0, Math.floor(remainExp)).toLocaleString() + " XP";
+
+        if (xpPerHour > 0) {
+            const hours = remainExp / xpPerHour;
+            document.getElementById('statHours').innerText = hours.toFixed(1) + " 시간";
+            document.getElementById('statDays').innerText = (hours / 24).toFixed(1) + " 일";
+        } else {
+            document.getElementById('statHours').innerText = "입력 필요";
+            document.getElementById('statDays').innerText = "-";
+        }
+    });
+
+    resetBtn.addEventListener('click', () => {
+        document.querySelectorAll('input').forEach(i => i.value = "");
+        resultBox.style.display = 'none';
+    });
+</script>
+
+</body>
+</html>
