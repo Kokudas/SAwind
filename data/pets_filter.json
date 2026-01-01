@@ -4507,5 +4507,167 @@
     "mount": false,
     "img": "https://wind01.net/info/img/100855.gif",
     "routeType": "포획"
+  },
+        {
+    "name": "흑카키",
+    "searchable": true,
+    "grade": "일반",
+    "attr": {
+      "지": 5,
+      "수": 0,
+      "화": 0,
+      "풍": 5
+    },
+    "s0": {
+      "hp": 31.9,
+      "atk": 7.13,
+      "def": 3.88,
+      "agi": 7.7
+    },
+    "sg": {
+      "hp": 8.85,
+      "atk": 1.98,
+      "def": 1.08,
+      "agi": 2.14
+    },
+    "route": "펫 코인 상점",
+    "mount": true,
+    "img": "https://wind01.net/info/img/100904.gif",
+    "routeType": "기타"
+  },
+        {
+    "name": "핑코",
+    "searchable": true,
+    "grade": "일반",
+    "attr": {
+      "지": 0,
+      "수": 2,
+      "화": 8,
+      "풍": 0
+    },
+    "s0": {
+      "hp": 51.88,
+      "atk": 12.21,
+      "def": 6.81,
+      "agi": 8.13
+    },
+    "sg": {
+      "hp": 9.86,
+      "atk": 2.32,
+      "def": 1.29,
+      "agi": 1.54
+    },
+    "route": "지원 페트(VP 5500)",
+    "mount": false,
+    "img": "https://wind01.net/info/img/103074.gif",
+    "routeType": "VIP"
+  },
+        {
+    "name": "가우",
+    "searchable": true,
+    "grade": "일반",
+    "attr": {
+      "지": 0,
+      "수": 7,
+      "화": 3,
+      "풍": 0
+    },
+    "s0": {
+      "hp": 58.63,
+      "atk": 12.13,
+      "def": 7.41,
+      "agi": 6.63
+    },
+    "sg": {
+      "hp": 11.14,
+      "atk": 2.3,
+      "def": 1.41,
+      "agi": 1.26
+    },
+    "route": "듀얼 포인트 상점",
+    "mount": false,
+    "img": "https://wind01.net/info/img/160120.gif",
+    "routeType": "듀얼보상"
+  },
+        {
+    "name": "익시노돈",
+    "searchable": true,
+    "grade": "일반",
+    "attr": {
+      "지": 0,
+      "수": 0,
+      "화": 0,
+      "풍": 10
+    },
+    "s0": {
+      "hp": 44.05,
+      "atk": 8.63,
+      "def": 4.9,
+      "agi": 9.31
+    },
+    "sg": {
+      "hp": 9.86,
+      "atk": 1.93,
+      "def": 1.1,
+      "agi": 2.09
+    },,
+    "route": "지원 페트(VP 5500)",
+    "mount": false,
+    "img": "https://wind01.net/info/img/102610.gif",
+    "routeType": "VIP"
+  },
+        {
+    "name": "라그노스",
+    "searchable": true,
+    "grade": "일반",
+    "attr": {
+      "지": 9,
+      "수": 1,
+      "화": 0,
+      "풍": 0
+    },
+    "s0": {
+      "hp": 57.72,
+      "atk": 11.62,
+      "def": 10.54,
+      "agi": 2.52
+    },
+    "sg": {
+      "hp": 11.42,
+      "atk": 2.3,
+      "def": 2.09,
+      "agi": 0.5
+    },
+    "route": "지원 페트(VP 5500)",
+    "mount": true,
+    "img": "https://wind01.net/info/img/103163.gif",
+    "routeType": "VIP"
+  },
+        {
+    "name": "모사크",
+    "searchable": true,
+    "grade": "일반",
+    "attr": {
+      "지": 0,
+      "수": 10,
+      "화": 0,
+      "풍": 0
+    },
+    "s0": {
+      "hp": 50.71,
+      "atk": 10.85,
+      "def": 6.3,
+      "agi": 5.83
+    },
+    "sg": {
+      "hp": 10.95,
+      "atk": 2.34,
+      "def": 1.36,
+      "agi": 1.26
+    },
+    "route": "지원 페트(VP 5500)",
+    "mount": false,
+    "img": "https://wind01.net/info/img/103213.gif",
+    "routeType": "VIP"
   }
 ]
