@@ -4669,5 +4669,32 @@
     "mount": false,
     "img": "https://wind01.net/info/img/103213.gif",
     "routeType": "VIP"
+  },
+          {
+    "name": "크루거",
+    "searchable": true,
+    "grade": "상급",
+    "attr": {
+      "지": 5,
+      "수": 5,
+      "화": 0,
+      "풍": 0
+    },
+    "s0": {
+      "hp": 54.99,
+      "atk": 11.54,
+      "def": 8.03,
+      "agi": 8.71
+    },
+    "sg": {
+      "hp": 10.05,
+      "atk": 2.11,
+      "def": 1.47,
+      "agi": 1.59
+    },
+    "route": "스라인 복권 1등",
+    "mount": true,
+    "img": "https://wind01.net/info/img/105321.gif",
+    "routeType": "복권"
   }
 ]
