@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>WIND 서버 페트 필터(v1.0)</title>
+<title>WIND 서버 페트 필터(v1.1)</title>
 <style>
   :root{
     --bg:#0f1115; --panel:#161a22; --ink:#e8ecf3; --muted:#9aa1ad; --pri:#7aa2ff; --ring:#1f2632;
@@ -91,7 +91,7 @@
     color:#020715;
   } 
   .m-no{background: radial-gradient(120% 120% at 20% 20%, #d4d7dd 0%, #9aa1ad 65%, #6c7482 100%); color:#0f1115}
-  .toolbar{display:flex; gap:8px; align-items:center} .hidden{display:none!important}
+  .toolbar{display:flex; gap:8px; alignitems:center} .hidden{display:none!important}
   .editPanel{display:none; grid-template-columns: 1fr auto; gap:8px; align-items:center} .editing .editPanel{display:grid}
   .toggleEdit.btn.active{outline:2px solid #2a364b} .u-input{width:100%; background:#0f141f; border:1px solid #263045; color:var(--ink); border-radius:10px; padding:6px 8px}
   .sortWrap{
@@ -128,76 +128,62 @@
   .gh-panel{display:none; grid-template-columns: repeat(3, 1fr); gap:8px; padding:10px; border:1px dashed #2a3a59; border-radius:12px; background:#0f141f; margin-top:10px}
   .gh-panel.active{display:grid}
   .gh-panel .wide{grid-column: 1 / -1}
-/* 필터 뱃지 + 개수 + 정렬 줄 배치 */
-.filter-toolbar{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:8px;
-  margin-bottom:6px;
-}
-
-.filter-left{
-  display:flex;
-  flex-wrap:wrap;
-  align-items:center;
-  gap:6px;
-}
-
-/* 개수 뱃지 살짝 줄이기 */
-.count-pill{
-  font-size:12px;
-  padding:2px 10px;
-}
-
-/* 오른쪽 정렬 영역은 기존 sortWrap + 약간의 여백만 사용 */
-.filter-right{
-  display:flex;
-  align-items:center;
-  gap:4px;
-}
-
-  .filterCol{
-  display:flex;
-  flex-direction:column;
-  gap:4px;
-}
-
-.filterTitle{
-  font-size:12px;
-  font-weight:900;
-  color:var(--muted);
-}
-
-.filterDesc{
-  font-size:11px;
-  color:var(--muted);
-}
-
-/* 모바일에서는 위아래로 자연스럽게 나눔 */
-@media (max-width: 780px){
+  /* 필터 뱃지 + 개수 + 정렬 줄 배치 */
   .filter-toolbar{
-    flex-direction:column-reverse;  /* 모바일에서 정렬 셀렉트가 아래로 내려가게 */
-    align-items:stretch;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+    margin-bottom:6px;
+  }
+  .filter-left{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:6px;
+  }
+  .count-pill{
+    font-size:12px;
+    padding:2px 10px;
   }
   .filter-right{
-    justify-content:flex-end;
+    display:flex;
+    align-items:center;
+    gap:4px;
   }
-}
-
-  
+  .filterCol{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  .filterTitle{
+    font-size:12px;
+    font-weight:900;
+    color:var(--muted);
+  }
+  .filterDesc{
+    font-size:11px;
+    color:var(--muted);
+  }
+  @media (max-width: 780px){
+    .filter-toolbar{
+      flex-direction:column-reverse;
+      align-items:stretch;
+    }
+    .filter-right{
+      justify-content:flex-end;
+    }
+  }
 </style>
 </head>
 <body>
 <header>
   <div class="wrap">
-    <!-- 상단바: 반응형 -->
     <div class="topbar">
       <div class="title">
         <h1>윈드 서버 페트 필터</h1>
         <div class="muted">잘 부탁드립니다. </div>
       </div>
-
       <div class="topbar-actions">
         <div class="toolbar hidden" id="adminToolbar" style="display:none">
           <button class="btn toggleEdit" id="toggleEditBtn">편집모드</button>
@@ -206,10 +192,9 @@
           <button class="btn" id="importJsonBtn">JSON 불러오기</button>
           <input id="importJson" type="file" accept="application/json" class="hidden"/>
           <button class="btn" id="githubBtn">GitHub 커밋</button>
-          <!-- 로그아웃 버튼 추가 -->
           <button class="btn" id="adminLogoutBtn">로그아웃</button>
         </div>
-        <a class="backBtn" id="wdhomeBtn" href="https://wind01.net/info/pet.php">공식 윈드 페트정보</a>
+        <a class="backBtn" id="wdhomeBtn" href="https://wind01.net/info/pet.html">공식 윈드 페트정보</a>
         <a class="backBtn" id="backBtn" href="https://kokudas.github.io/SAwind/">계산기로 돌아가기</a>
         <button class="adminLogin" id="adminLoginBtn">♪</button>
       </div>
@@ -219,7 +204,7 @@
       <div><label>Owner</label><input type="text" id="ghOwner" value="kokudas"/></div>
       <div><label>Repo</label><input type="text" id="ghRepo" value="kokudas.github.io"/></div>
       <div><label>Branch</label><input type="text" id="ghBranch" value="main"/></div>
-      <div class="wide"><label>Path</label><input type="text" id="ghPath" value="data/pets_filter.json"/></div>
+      <div class="wide"><label>Path</label><input type="text" id="ghPath" value="data/pets.json"/></div>
       <div class="wide"><label>Commit Message</label><input type="text" id="ghMsg" value="Update pets data via UI"/></div>
       <div class="wide"><label>GitHub Token</label><input type="password" id="ghToken" placeholder="repo 권한 필요"/></div>
       <div class="wide" style="display:flex; gap:8px">
@@ -282,29 +267,29 @@
               <label class="check"><input type="checkbox" class="mount" value="불가" checked/> 탑승 불가</label>
             </div>
           </div>
-<div style="margin-top:10px;">
-  <div class="filterCol">
-    <div class="filterTitle">획득 경로</div>
-    <div class="checks">
-      <select id="routeType" class="routeSelect">
-        <option value="">전체</option>
-        <option value="포획">포획</option>
-        <option value="퀘스트">퀘스트</option>
-        <option value="복권">복권</option>
-        <option value="코스">코스</option>
-        <option value="VIP">VIP</option>
-        <option value="레이드">레이드</option>
-        <option value="이벤트">이벤트</option>
-        <option value="듀얼보상">듀얼보상</option>
-        <option value="진화">진화</option>
-        <option value="환생">환생</option>
-        <option value="기타">기타</option>
-      </select>
-    </div>
-    <div class="filterDesc mini">획득 경로 기준으로 필터링합니다.</div>
-  </div>
-</div>
-
+          <div style="margin-top:10px;">
+            <div class="filterCol">
+              <div class="filterTitle">획득 경로</div>
+              <div class="checks">
+                <select id="routeType" class="routeSelect">
+                  <option value="">전체</option>
+                  <option value="포획">포획</option>
+                  <option value="퀘스트">퀘스트</option>
+                  <option value="복권">복권</option>
+                  <option value="코스">코스</option>
+                  <option value="VIP">VIP</option>
+                  <option value="레이드">레이드</option>
+                  <option value="이벤트">이벤트</option>
+                  <option value="듀얼보상">듀얼보상</option>
+                  <option value="진화">진화</option>
+                  <option value="환생">환생</option>
+                  <option value="기타">기타</option>
+                </select>
+              </div>
+              <div class="filterDesc mini">획득 경로 기준으로 필터링합니다.</div>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="card">
         <label class="section">최소치 (이상)</label>
@@ -323,37 +308,31 @@
       </div>
     </section>
 
-<section class="rhs">
-  <div class="card">
-    <!-- ★ 필터 요약 + 정렬 줄 -->
-    <div class="filter-toolbar">
-      <!-- 왼쪽: 필터 뱃지 + 개수 -->
-      <div class="filter-left">
-        <div class="chips" id="activeChips"></div>
-        <div class="pill count-pill">
-          <strong id="countShow">0</strong>&nbsp;/&nbsp;
-          <span id="totalShow">0</span> 개
+    <section class="rhs">
+      <div class="card">
+        <div class="filter-toolbar">
+          <div class="filter-left">
+            <div class="chips" id="activeChips"></div>
+            <div class="pill count-pill">
+              <strong id="countShow">0</strong>&nbsp;/&nbsp;
+              <span id="totalShow">0</span> 개
+            </div>
+          </div>
+          <div class="filter-right sortWrap">
+            <label for="sortMode" class="muted" style="font-size:11px; margin-right:4px;">정렬</label>
+            <select id="sortMode">
+              <option value="name">가나다 순</option>
+              <option value="grow_atk">성장 공격력 ↓</option>
+              <option value="grow_def">성장 방어력 ↓</option>
+              <option value="grow_agi">성장 순발력 ↓</option>
+            </select>
+          </div>
+        </div>
+        <div id="listWrap" class="resultGrid">
+          <div class="loading" id="loading">데이터를 불러오는 중…</div>
         </div>
       </div>
-
-      <!-- 오른쪽: 정렬 셀렉트 -->
-      <div class="filter-right sortWrap">
-        <label for="sortMode" class="muted" style="font-size:11px; margin-right:4px;">정렬</label>
-        <select id="sortMode">
-          <option value="name">가나다 순</option>
-          <option value="grow_atk">성장 공격력 ↓</option>
-          <option value="grow_def">성장 방어력 ↓</option>
-          <option value="grow_agi">성장 순발력 ↓</option>
-        </select>
-      </div>
-    </div>
-
-    <div id="listWrap" class="resultGrid">
-      <div class="loading" id="loading">데이터를 불러오는 중…</div>
-    </div>
-  </div>
-</section>
-
+    </section>
   </div>
 </main>
 
@@ -361,7 +340,7 @@
 
 <script>
 /* ========= 데이터 경로 ========= */
-const DATA_URL_DEFAULT = "data/pets_filter.json";
+const DATA_URL_DEFAULT = "data/pets.json";
 let DATA_URL = DATA_URL_DEFAULT;
 
 let PETS = [];
@@ -372,9 +351,9 @@ let ADMIN = false;
 const ADMIN_HASH = "37bd45d638c2d11c49c641d2e9c4f49f406caf3ee282743e0c800aa1ed68e2ee";
 
 /* ==== 관리자 세션(만료) 설정 ==== */
-const ADMIN_KEY = "pets_admin_unlocked_v2";      // 새 키(만료 포함)
-const ADMIN_TTL_MS = 30 * 60 * 1000;             // 30분 (원하는 값으로 조정)
-const USE_SESSION_ADMIN = false;                  // true: 탭/브라우저 닫으면 해제
+const ADMIN_KEY = "pets_admin_unlocked_v2";
+const ADMIN_TTL_MS = 30 * 60 * 1000;
+const USE_SESSION_ADMIN = false;
 const ADMIN_STORAGE = USE_SESSION_ADMIN ? sessionStorage : localStorage;
 
 function isAdminAlive(){
@@ -441,11 +420,11 @@ function fmt(x) { return (x==null || Number.isNaN(x)) ? "—" : (Math.round(x*10
 function getFilters() {
   const highInput = $("#dual_high");
   const routeSel = $("#routeType");
-  const routeType = routeSel ? routeSel.value : "";   // "" = 전체(필터 없음)
+  const routeType = routeSel ? routeSel.value : "";
 
   let high = parseInt(highInput?.value || "5", 10);
   if (Number.isNaN(high)) high = 5;
-  high = Math.max(5, Math.min(9, high));     // 5~9 사이로 고정
+  high = Math.max(5, Math.min(9, high));
   const low = 10 - high;
   if ($("#dual_low")) $("#dual_low").value = String(low);
 
@@ -468,9 +447,7 @@ function getFilters() {
   };
 }
 
-
 function match(p, f) {
-  // ★ searchable 값이 false인 경우만 필터링 (속성이 없으면 기본 true 취급)
   const searchable = (p.searchable !== false);
   if (!searchable) return false;
 
@@ -487,7 +464,7 @@ function match(p, f) {
       if (!dom.includes(f.attrPick)) return false;
     }
   }
-  // grade 필터는 검색 가능한 애들에만 적용 (지금은 어차피 위에서 searchable 아닌 애는 걸러짐)
+
   if (searchable) {
     if (!f.grades.includes(p.grade||"")) return false;
   }
@@ -540,7 +517,6 @@ function attrOval(k, v, isDom){
   const cls = { "지":"a-earth", "수":"a-water", "화":"a-fire", "풍":"a-wind" }[k] || "";
   span.className = "oval " + cls + (isDom ? " dom" : "");
 
-  // ★ 0이거나 값이 없으면 숫자 표시는 숨김
   if (v == null || v <= 0) {
     span.textContent = "";
   } else {
@@ -599,7 +575,6 @@ function makeEditPanel(p){
 
 function petCard(p) {
   const dom = dominantAttrs(p.attr);
-  // ★ 새 키 사용, 없으면 init/grow도 허용
   const init = p.s0 || p.init || {};
   const grow = p.sg || p.grow || {};
 
@@ -626,7 +601,6 @@ function petCard(p) {
   name.textContent = p.name || "—";
   r1.appendChild(name);
 
-  // ★ searchable === false 인 경우만 배지 표시
   if (p.searchable === false) {
     const b = document.createElement("span");
     b.className = "badge";
@@ -677,21 +651,18 @@ function petCard(p) {
 
 function sortRows(rows, f, sortMode) {
   const mode = sortMode || "name";
-
   const getGrow = (p) => p.sg || p.grow || {};
   const safeNum = (v) => (Number.isFinite(v) ? v : Infinity);
 
-  // === 1) 성장 공격력 내림차순 ===
   if (mode === "grow_atk") {
     return rows.slice().sort((a, b) => {
       const ga = getGrow(a), gb = getGrow(b);
       const va = safeNum(ga.atk), vb = safeNum(gb.atk);
-      if (va !== vb) return vb - va;  // ↓ 내림차순
+      if (va !== vb) return vb - va;
       return (a.name || "").localeCompare(b.name || "", "ko");
     });
   }
 
-  // === 2) 성장 방어력 내림차순 ===
   if (mode === "grow_def") {
     return rows.slice().sort((a, b) => {
       const ga = getGrow(a), gb = getGrow(b);
@@ -701,7 +672,6 @@ function sortRows(rows, f, sortMode) {
     });
   }
 
-  // === 3) 성장 순발력 내림차순 ===
   if (mode === "grow_agi") {
     return rows.slice().sort((a, b) => {
       const ga = getGrow(a), gb = getGrow(b);
@@ -711,7 +681,6 @@ function sortRows(rows, f, sortMode) {
     });
   }
 
-  // === 4) 문턱(최소치) 필터가 있는 경우: 기존 "문턱 우선 + 주속성/이름" 정렬 ===
   const anyMin =
     f.min_init_hp  > 0 || f.min_init_atk > 0 || f.min_init_def > 0 || f.min_init_agi > 0 ||
     f.min_grow_hp  > 0 || f.min_grow_atk > 0 || f.min_grow_def > 0 || f.min_grow_agi > 0;
@@ -744,7 +713,7 @@ function sortRows(rows, f, sortMode) {
       if (key && key !== "전체" && key !== "듀얼") {
         const getv = (p) =>
           (p.attr && typeof p.attr[key] === "number") ? p.attr[key] : 0;
-        const dv = getv(b) - getv(a); // 큰 값 우선
+        const dv = getv(b) - getv(a);
         if (dv !== 0) return dv;
       }
 
@@ -752,26 +721,22 @@ function sortRows(rows, f, sortMode) {
     });
   }
 
-  // === 5) 문턱 없음: 주 속성 필터가 있으면 그 속성 내림차순 → 이름순 ===
   const key = f.attrPick;
   if (key && key !== "전체" && key !== "듀얼") {
     const getv = (p) =>
       (p.attr && typeof p.attr[key] === "number") ? p.attr[key] : 0;
 
     return rows.slice().sort((a, b) => {
-      const dv = getv(b) - getv(a); // 해당 속성 높은 순
+      const dv = getv(b) - getv(a);
       if (dv !== 0) return dv;
       return (a.name || "").localeCompare(b.name || "", "ko");
     });
   }
 
-  // === 6) 기본: 가나다 순 ===
   return rows.slice().sort((a, b) =>
     (a.name || "").localeCompare(b.name || "", "ko")
   );
 }
-
-
 
 function ensureMountAtLeastOne(e) {
   const boxes = $$(".mount");
@@ -782,12 +747,11 @@ function ensureMountAtLeastOne(e) {
   }
   render();
 }
-  function ensureGradeAtLeastOne(e) {
+
+function ensureGradeAtLeastOne(e) {
   const boxes = $$(".grade");
   const checked = boxes.filter(b => b.checked);
-
   if (checked.length === 0) {
-    // 마지막 하나를 해제하려고 하면 다시 켜주기
     e.target.checked = true;
     showToast("최소 한 개 이상의 등급을 선택해야 합니다.");
   }
@@ -807,18 +771,15 @@ function render() {
   const chips = $("#activeChips");
   chips.innerHTML = "";
   if (f.q) chips.appendChild(chip(`이름: "${f.q}"`, ()=>{ $("#q").value=""; render(); }));
-  //if (f.onlySearchable) chips.appendChild(chip("검색 가능만", ()=>{ $("#onlySearchable").checked=false; render(); }));
   if (f.attrPick!=="전체") {
     if (f.attrPick==="듀얼") chips.appendChild(chip(`듀얼 = ${f.dualHigh}/${f.dualLow}(합계10)`, ()=>{ $("#attrPick").value="전체"; render(); }));
     else chips.appendChild(chip(`주속성: ${f.attrPick}`, ()=>{ $("#attrPick").value="전체"; render(); }));
   }
-  $$(".grade").forEach(g=>{ if(!g.checked) chips.appendChild(chip(`등급 제외: ${g.value}`, ()=>{ g.checked=true; render(); })); });
-    // 획득 경로 chip
-  if (f.routeType && f.routeType !== "") {
+  const routeTypeSel = $("#routeType");
+  if (f.routeType && routeTypeSel) {
     chips.appendChild(
       chip(`획득: ${f.routeType}`, () => {
-        const sel = $("#routeType");
-        if (sel) sel.value = "";
+        routeTypeSel.value = "";
         render();
       })
     );
@@ -856,23 +817,20 @@ function render() {
 }
 
 function bindFilterEvents() {
-  // 이름 검색
   document.querySelector("#q")?.addEventListener("input", render);
-   // ★ 정렬 모드 변경
   document.querySelector("#sortMode")?.addEventListener("change", render);
-  // 주 속성 선택
   document.querySelector("#attrPick")?.addEventListener("change", render);
-  // ★ 등급 체크박스: 최소 1개 유지
+
   document.querySelectorAll(".grade").forEach(el => {
     el.removeEventListener?.("change", ensureGradeAtLeastOne);
     el.addEventListener("change", ensureGradeAtLeastOne);
   });
-  // 탑승 체크박스 (최소 1개 유지)
+
   document.querySelectorAll(".mount").forEach(el => {
     el.removeEventListener?.("change", ensureMountAtLeastOne);
     el.addEventListener("change", ensureMountAtLeastOne);
   });
-  // 최소치 입력들
+
   [
     "min_init_hp","min_init_atk","min_init_def","min_init_agi",
     "min_grow_hp","min_grow_atk","min_grow_def","min_grow_agi"
@@ -948,8 +906,8 @@ async function adminUnlock() {
     const h = await sha256Hex(pw);
     if (h === ADMIN_HASH) {
       ADMIN = true;
-      refreshAdminTTL();        // 만료 갱신 저장
-      scheduleAdminAutoLock();  // 자동 해제 타이머
+      refreshAdminTTL();
+      scheduleAdminAutoLock();
       showToast("관리자 모드가 활성화되었습니다.");
       return true;
     } else {
@@ -962,12 +920,11 @@ async function adminUnlock() {
   }
 }
 
-/* ========== 이벤트 바인딩 ========== */
 $("#routeType").addEventListener("change", render);
 $("#adminLoginBtn").addEventListener("click", async ()=>{ await adminUnlock(); render(); });
 $("#toggleEditBtn")?.addEventListener("click", ()=>{ if (!ADMIN) return; EDIT_MODE = !EDIT_MODE; render(); });
 $("#exportCsv")?.addEventListener("click", ()=>{ if(!ADMIN) return; const rows = currentFiltered(); download("stoneage_pets_filtered.csv", toCSV(rows), "text/csv;charset=utf-8"); });
-$("#exportJson")?.addEventListener("click", ()=>{ if(!ADMIN) return; download("pets_filter.json", JSON.stringify(PETS, null, 2), "application/json;charset=utf-8"); });
+$("#exportJson")?.addEventListener("click", ()=>{ if(!ADMIN) return; download("pets.json", JSON.stringify(PETS, null, 2), "application/json;charset=utf-8"); });
 $("#importJsonBtn")?.addEventListener("click", ()=>{ if(!ADMIN) return; $("#importJson").click(); });
 $("#importJson")?.addEventListener("change", (e)=>{ if (!ADMIN) return;
   const file = e.target.files?.[0];
@@ -993,19 +950,17 @@ $("#githubBtn")?.addEventListener("click", ()=>{ if(!ADMIN) return;
 $("#adminLogoutBtn")?.addEventListener("click", ()=>{
   ADMIN = false;
   ADMIN_STORAGE.removeItem(ADMIN_KEY);
-  localStorage.removeItem("pets_admin_unlocked"); // 구버전 잔여키도 정리
+  localStorage.removeItem("pets_admin_unlocked");
   render();
   showToast("관리자 모드를 해제했습니다.");
 });
 
-/* 활동 시 TTL 자동 연장(선택) */
 ["click","keydown","touchstart"].forEach(ev=>{
   document.addEventListener(ev, ()=>{
     if(ADMIN && isAdminAlive()){ refreshAdminTTL(); scheduleAdminAutoLock(); }
   }, {passive:true});
 });
 
-/* ========= GitHub 커밋 도우미 ========= */
 function b64EncodeUnicode(str) {
   return btoa(unescape(encodeURIComponent(str)));
 }
@@ -1040,14 +995,14 @@ $("#ghDoCommit")?.addEventListener("click", async ()=>{ if(!ADMIN) return;
   const owner = $("#ghOwner").value.trim();
   const repo = $("#ghRepo").value.trim();
   const branch = $("#ghBranch").value.trim() || "main";
-  const path = $("#ghPath").value.trim() || "data/pets_filter.json";
+  const path = $("#ghPath").value.trim() || "data/pets.json";
   const msg = $("#ghMsg").value.trim() || "Update pets data via UI";
   const token = $("#ghToken").value.trim();
   const status = $("#ghStatus");
   status.textContent = "커밋 중…";
   try {
     const jsonText = JSON.stringify(PETS, null, 2);
-    const result = await githubCommit(owner, repo, branch, path, msg, token, jsonText);
+    const result = await githubCommit(owner, repo, branch, path, msg, jsonText);
     status.innerHTML = `성공! <a href="${result.content?.html_url||'#'}" target="_blank" style="color:#7aa2ff">커밋 파일 보기</a>`;
     await loadPets(true);
     showToast("원격 JSON 업데이트 및 재로드 완료");
@@ -1057,7 +1012,7 @@ $("#ghDoCommit")?.addEventListener("click", async ()=>{ if(!ADMIN) return;
   }
 });
 
-/* ========= 듀얼 상위값 10 방지 + 안내 ========= */
+/* ========= 듀얼 상위값 처리 ========= */
 let prevDualHigh = 5;
 function syncDualLow() {
   const high = Math.max(5, Math.min(9, parseInt($("#dual_high")?.value || String(prevDualHigh), 10)));
@@ -1075,7 +1030,7 @@ if (dualHighEl) {
       syncDualLow();
       return;
     }
-    if (v >= 10) { // 10 방지 + 안내
+    if (v >= 10) {
       showToast("주 속성 10은 지,수,화,풍 데이터를 이용하세요.");
       v = 9;
     }
@@ -1110,8 +1065,20 @@ async function loadPets(force=false) {
     $("#loading")?.classList.remove("hidden");
     const res = await fetch(DATA_URL + (force ? ("?t="+Date.now()) : ""));
     if (!res.ok) throw new Error("HTTP " + res.status);
-    const arr = await res.json();
-    if (!Array.isArray(arr)) throw new Error("JSON 최상위는 배열이어야 합니다.");
+    const raw = await res.json();
+
+    let arr;
+    if (Array.isArray(raw)) {
+      arr = raw;
+    } else if (raw && typeof raw === "object") {
+      arr = Object.entries(raw).map(([name, pet]) => ({
+        name,
+        ...pet
+      }));
+    } else {
+      throw new Error("지원하지 않는 JSON 형식입니다.");
+    }
+
     PETS = arr;
     $("#totalShow").textContent = PETS.length;
     render();
@@ -1125,7 +1092,6 @@ async function loadPets(force=false) {
 }
 
 /* ========= 부팅 ========= */
-/* 구버전 키 → 만료 키로 1회 이관 */
 if (localStorage.getItem("pets_admin_unlocked") === "1") {
   localStorage.removeItem("pets_admin_unlocked");
   ADMIN_STORAGE.setItem(ADMIN_KEY, JSON.stringify({ on:1, expires: Date.now() + ADMIN_TTL_MS }));
