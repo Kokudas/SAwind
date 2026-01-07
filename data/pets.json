@@ -6276,7 +6276,18 @@
       "agi": 22
     },
     "ku_override": true,
-    "searchable": false
+    "searchable": true,
+    "grade": "일반",
+    "attr": {
+      "지": 9,
+      "수": 1,
+      "화": 0,
+      "풍": 0
+    },
+    "route": "홍보이벤트",
+    "mount": false,
+    "img": "https://wind01.net/info/img/200203.gif",
+    "routeType": "이벤트"
   },
   "카로스": {
     "s0": {
@@ -6299,7 +6310,18 @@
       "agi": 23
     },
     "ku_override": true,
-    "searchable": false
+    "searchable": true,
+    "grade": "일반",
+    "attr": {
+      "지": 1,
+      "수": 9,
+      "화": 0,
+      "풍": 0
+    },
+    "route": "홍보이벤트",
+    "mount": false,
+    "img": "https://wind01.net/info/img/200204.gif",
+    "routeType": "이벤트"
   },
   "케이르": {
     "s0": {
@@ -6322,7 +6344,18 @@
       "agi": 23
     },
     "ku_override": true,
-    "searchable": false
+    "searchable": true,
+    "grade": "일반",
+    "attr": {
+      "지": 0,
+      "수": 0,
+      "화": 9,
+      "풍": 1
+    },
+    "route": "홍보이벤트",
+    "mount": false,
+    "img": "https://wind01.net/info/img/200205.gif",
+    "routeType": "이벤트"
   },
   "타비스": {
     "s0": {
@@ -6345,7 +6378,18 @@
       "agi": 25
     },
     "ku_override": true,
-    "searchable": false
+    "searchable": true,
+    "grade": "일반",
+    "attr": {
+      "지": 0,
+      "수": 0,
+      "화": 1,
+      "풍": 9
+    },
+    "route": "홍보이벤트",
+    "mount": false,
+    "img": "https://wind01.net/info/img/200206.gif",
+    "routeType": "이벤트"
   },
   "황금복덩이": {
     "s0": {
@@ -6368,5 +6412,17 @@
       "agi": 27
     },
     "ku_override": true
+    "searchable": true,
+    "grade": "상급",
+    "attr": {
+      "지": 0,
+      "수": 0,
+      "화": 2,
+      "풍": 8
+    },
+    "route": "복덩이(어려움) 레이드",
+    "mount": false,
+    "img": "https://wind01.net/info/img/103245.gif",
+    "routeType": "레이드"
   }
 }
