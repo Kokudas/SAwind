@@ -6346,5 +6346,27 @@
     },
     "ku_override": true,
     "searchable": false
+  },
+  "황금복덩이": {
+    "s0": {
+      "hp": 38.3,
+      "atk": 7.24,
+      "def": 6.33,
+      "agi": 6.3
+    },
+    "sg": {
+      "hp": 9.86,
+      "atk": 1.86,
+      "def": 1.63,
+      "agi": 1.62
+    },
+    "k": 20,
+    "u": {
+      "hp": 22,
+      "atk": 25,
+      "def": 20,
+      "agi": 27
+    },
+    "ku_override": true
   }
 }
