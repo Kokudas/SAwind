@@ -3571,23 +3571,23 @@
   },
   "푸테라": {
     "s0": {
-      "hp": 54.375,
-      "atk": 11.081,
-      "def": 7.031,
-      "agi": 8.625
+      "hp": 54.625,
+      "atk": 11.118,
+      "def": 7.518,
+      "agi": 8.375
     },
     "sg": {
-      "hp": 10.331,
-      "atk": 2.105,
-      "def": 1.335,
-      "agi": 1.638
+      "hp": 10.378,
+      "atk": 2.112,
+      "def": 1.428,
+      "agi": 1.591
     },
     "k": 25,
     "u": {
       "hp": 27,
       "atk": 33,
-      "def": 15,
-      "agi": 30
+      "def": 17,
+      "agi": 29
     },
     "ku_override": true,
     "searchable": true,
@@ -6582,7 +6582,7 @@
       "agi": 11
     },
     "ku_override": true,
-     "searchable": true,
+    "searchable": true,
     "grade": "일반",
     "attr": {
       "지": 5,
@@ -6616,7 +6616,7 @@
       "agi": 30
     },
     "ku_override": true,
-     "searchable": true,
+    "searchable": true,
     "grade": "일반",
     "attr": {
       "지": 0,
