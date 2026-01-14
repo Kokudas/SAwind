@@ -6628,5 +6628,27 @@
     "mount": false,
     "img": "https://wind01.net/info/img/103028.gif",
     "routeType": "VIP"
+  },
+  "본드래곤": {
+    "s0": {
+      "hp": 54.375,
+      "atk": 11.818,
+      "def": 7.543,
+      "agi": 7.375
+    },
+    "sg": {
+      "hp": 10.331,
+      "atk": 2.245,
+      "def": 1.433,
+      "agi": 1.401
+    },
+    "k": 25,
+    "u": {
+      "hp": 27,
+      "atk": 36,
+      "def": 17,
+      "agi": 25
+    },
+    "ku_override": true
   }
 }
