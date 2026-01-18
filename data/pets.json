@@ -6683,6 +6683,18 @@
       "def": 15,
       "agi": 30
     },
-    "ku_override": true
+    "ku_override": true,
+    "searchable": true,
+    "grade": "일반",
+    "attr": {
+      "지": 0,
+      "수": 0,
+      "화": 3,
+      "풍": 7
+    },
+    "route": "부족 지원 페트",
+    "mount": false,
+    "img": "https://wind01.net/info/img/200218.gif",
+    "routeType": "기타"
   }
 }
