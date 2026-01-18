@@ -6662,5 +6662,27 @@
     "mount": true,
     "img": "https://wind01.net/info/img/103125.gif",
     "routeType": "기타"
+  },
+  "샤르페": {
+    "s0": {
+      "hp": 47.265,
+      "atk": 10.125,
+      "def": 6.399,
+      "agi": 7.935
+    },
+    "sg": {
+      "hp": 9.761,
+      "atk": 2.091,
+      "def": 1.321,
+      "agi": 1.638
+    },
+    "k": 23,
+    "u": {
+      "hp": 24,
+      "atk": 33,
+      "def": 15,
+      "agi": 30
+    },
+    "ku_override": true
   }
 }
