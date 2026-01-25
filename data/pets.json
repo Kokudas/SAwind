@@ -7091,6 +7091,18 @@
       "def": 17,
       "agi": 21
     },
-    "ku_override": true
+    "ku_override": true,
+        "searchable": true,
+    "grade": "일반",
+    "attr": {
+      "지": 0,
+      "수": 10,
+      "화": 0,
+      "풍": 0
+    },
+    "route": "미출시",
+    "mount": true,
+    "img": "https://wind01.net/info/img/100851.gif",
+    "routeType": "기타"
   }
 }
