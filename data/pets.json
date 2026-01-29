@@ -1531,16 +1531,16 @@
   },
   "카르기안": {
     "s0": {
-      "hp": 38.9,
-      "atk": 7.08,
-      "def": 7.63,
+      "hp": 40.9,
+      "atk": 7.285,
+      "def": 9.625,
       "agi": 3.3
     },
     "sg": {
-      "hp": 10.41,
-      "atk": 1.9,
-      "def": 2.04,
-      "agi": 0.88
+      "hp": 10.122,
+      "atk": 1.803,
+      "def": 2.382,
+      "agi": 0.816
     },
     "ku_override": true,
     "searchable": true,
@@ -1559,7 +1559,7 @@
     "u": {
       "hp": 25,
       "atk": 24,
-      "def": 27,
+      "def": 37,
       "agi": 12
     }
   },
@@ -7092,7 +7092,7 @@
       "agi": 21
     },
     "ku_override": true,
-        "searchable": true,
+    "searchable": true,
     "grade": "일반",
     "attr": {
       "지": 0,
